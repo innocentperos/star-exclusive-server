@@ -49,7 +49,35 @@ class Customer(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
+    @property
+    def secure_id_number(self):
+        value = self.id_number
+        size = len(value)
 
+        return f"{value[:2]}{'*'*(size-5)}{value[(size-3):size]}"
+    
+    @property
+    def secure_email_address(self):
+        
+        value = self.email_address
+        domain = value.split("@")
+        address = domain[0]
+        if len(domain) < 2:
+            domain = ""
+        else:
+            domain = f"@{domain[1]}"
+
+        size = len(address)
+        
+        return f"{address[:4]}{'*'*(size-4)}{domain}"
+    
+    @property
+    def secure_phone_number(self):
+        value = self.phone_number
+        size = len(value)
+        
+        return f"{value[:4]}{'*'*(size-6)}{value[size-2:size]}"
 
 class Payment(models.Model):
     PENDING = "pending"
@@ -78,9 +106,15 @@ class Payment(models.Model):
 class Reservation(models.Model):
     RESERVATION = "reseravtion"
     BOOKING = "booking"
+
     room = models.ForeignKey(
         Room, related_name="reservations", on_delete=models.CASCADE
     )
+
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL,null=True , related_name="reservations")
+    
+    # Holds the customer information just incase the customer was deleted
+    customer_raw= models.JSONField(null=True, blank=True, default=dict)
 
     reservation_type = models.CharField(
         max_length=25, choices=((RESERVATION, RESERVATION), (BOOKING, BOOKING))
