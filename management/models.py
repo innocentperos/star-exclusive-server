@@ -6,7 +6,7 @@ class RoomCategory(models.Model):
     price = models.FloatField()
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    cover = models.ImageField(blank=True,upload_to="rooms")
+    cover = models.FileField(blank=True,upload_to="rooms")
 
     def __str__(self) -> str:
         return self.title
@@ -20,7 +20,7 @@ class AddOn(models.Model):
     description = models.TextField(blank=True, default="")
     price = models.FloatField()
     render = models.TextField(blank=True, null=True)
-    cover = models.ImageField(blank=True,upload_to="rooms")
+    cover = models.FileField(blank=True,upload_to="rooms")
 
 
     def __str__(self):
