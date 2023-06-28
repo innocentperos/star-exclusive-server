@@ -7,6 +7,10 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 from rest_framework import status
 
+from django.db.models import Q,F
+from django.utils.dateparse import parse_datetime
+
+
 from .serializers import RoomCategorySerializer, RoomSerializer, SecureReservationSerializer
 
 from .models import Reservation, Room, RoomCategory
@@ -72,14 +76,39 @@ class RoomCategoryViewSet(ViewSet):
 class ReservationViewSet(ViewSet):
 
     def list(self, request:Request):
-
+        
+        before = request.query_params.get("before",None)
+        after = request.query_params.get("after",None)
+        
         reservations = Reservation.objects.all()
-        return Response(
+        
+        if before:
+          try:
+            before = parse_datetime(defore)
+            if before != None:
+              reservations.filter(departure_date__lte = defore)
+          except Exception as e:
+            pass
+        
+        
+        if request.user.is_anonymous:
+          return Response(
             SecureReservationSerializer(
             reservations,
             many = True
             ).data
-        )
+          )
+          
+        else:
+          return Response(
+            ReservationSerializer(
+              reservations,
+              many = True
+              ).data
+            )
+          
+        
+      
     
     
     

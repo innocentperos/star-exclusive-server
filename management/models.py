@@ -124,7 +124,7 @@ class Reservation(models.Model):
     # The date the guest will be leaving the hotel
     departure_date = models.DateTimeField()
     #The date the guest made the reservation
-    reservated_on = models.DateTimeField(auto_created=True)
+    reservated_on = models.DateTimeField(auto_created=True, blank = True)
     # The number of days the guest will be staying at the hotel
     stay = models.IntegerField(default=1)
     # The number of individuals the guest will be coming with
@@ -138,15 +138,15 @@ class Reservation(models.Model):
 
     # If the guest has made a payment or not
     paid = models.BooleanField(default=False)
-    payment = models.OneToOneField(Payment, null=True , on_delete= models.SET_NULL, related_name="reservation")
+    payment = models.OneToOneField(Payment, null=True, blank = True , on_delete= models.SET_NULL, related_name="reservation")
 
     # If the guest has canceled the request
-    canceled = models.BooleanField(default=False)
+    cancelled = models.BooleanField(default=False)
     # The date the guest canceled the request
-    canceled_on = models.DateTimeField(blank=True, null=True)
+    cancelled_on = models.DateTimeField(blank=True, null=True)
 
     def __str__(self) -> str:
-        return f"{'Paid' if self.paid else ''} {self.arrival_date.date} - {self.departure_date.date} | {self.room}"
+        return f"{'Paid' if self.paid else ''} {self.arrival_date.date()} - {self.departure_date.date()} | {self.room}"
 
 
 # Create your models here.

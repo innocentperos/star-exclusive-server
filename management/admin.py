@@ -37,5 +37,20 @@ class CustomerAdminModel(admin.ModelAdmin):
     )
 
     search_fields = ("email_address","id_number","phone_number","first_name","last_name")
-
-
+  
+@admin.register(Reservation)
+class ReservationAdminModel(admin.ModelAdmin):
+  list_display = (
+      "room",
+      "customer",
+      "reservation_type",
+      "arrival_date",
+      "departure_date",
+      "paid",
+      "payment",
+      "reservated_on",
+      "guest_count",
+      "cancelled"
+    )
+    
+  search_fields = ("customer__first_name","room__number")

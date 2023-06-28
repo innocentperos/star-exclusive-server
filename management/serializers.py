@@ -10,6 +10,8 @@ class RoomCategorySerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
+  
+    category = RoomCategorySerializer()
     class Meta:
         model = Room
         fields = ("pk", "number", "category", "description", "unique", "addon")
@@ -19,6 +21,7 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = (
+          "pk",
             "first_name",
             "last_name",
             "id_type",
@@ -31,6 +34,7 @@ class SecureCustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = (
+          "pk",
             "first_name",
             "last_name",
             "id_type",
@@ -41,9 +45,13 @@ class SecureCustomerSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
+  
+    customer = CustomerSerializer()
+    room = RoomSerializer()
     class Meta:
         model = Reservation
         fields = (
+          "pk",
             "room",
             "customer",
             "reservation_type",
@@ -56,17 +64,19 @@ class ReservationSerializer(serializers.ModelSerializer):
             "customization_request",
             "paid",
             "payment",
-            "canceled",
-            "canceled_on",
+            "cancelled",
+            "cancelled_on",
         )
 
 
 class SecureReservationSerializer(serializers.ModelSerializer):
 
     customer = SecureCustomerSerializer()
+    room = RoomSerializer()
     class Meta:
         model = Reservation
         fields = (
+          "pk",
             "room",
             "customer",
             "reservation_type",
@@ -79,7 +89,7 @@ class SecureReservationSerializer(serializers.ModelSerializer):
             "customization_request",
             "paid",
             "payment",
-            "canceled",
-            "canceled_on",
+            "cancelled",
+            "cancelled_on",
         )
 
