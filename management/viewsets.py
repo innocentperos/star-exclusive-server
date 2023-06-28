@@ -7,9 +7,9 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 from rest_framework import status
 
-from management.serializers import RoomCategorySerializer, RoomSerializer
+from .serializers import RoomCategorySerializer, RoomSerializer, SecureReservationSerializer
 
-from .models import Room, RoomCategory
+from .models import Reservation, Room, RoomCategory
 
 class RoomCategoryViewSet(ViewSet):
 
@@ -68,7 +68,18 @@ class RoomCategoryViewSet(ViewSet):
                     "detail":"Room Category Not Found"
                 }
             )
-            
+
+class ReservationViewSet(ViewSet):
+
+    def list(self, request:Request):
+
+        reservations = Reservation.objects.all()
+        return Response(
+            SecureReservationSerializer(
+            reservations,
+            many = True
+            ).data
+        )
     
     
     
