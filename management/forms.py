@@ -1,9 +1,10 @@
 from django import forms
-from .models import Reservation
+from .models import Customer, Reservation, RoomCategory
 
 
 class NewCustomerForm(forms.ModelForm):
     class Meta:
+        model = Customer
         fields = (
             "first_name",
             "last_name",
@@ -15,6 +16,7 @@ class NewCustomerForm(forms.ModelForm):
 
 
 class NewReservationForm(forms.ModelForm):
+    category = forms.ModelChoiceField(queryset=RoomCategory.objects.all(), required=True)
     class Meta:
         model = Reservation
         fields = (

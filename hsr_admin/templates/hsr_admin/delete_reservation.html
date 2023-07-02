@@ -1,0 +1,23 @@
+{% extends 'hsr_admin/base.html' %} {% block body %}
+<div class="p-8 space-y-4">
+  <span class="text-2xl">Are you sure</span>
+  <p class="text-lg">You are about to delete the following reservation</p>
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <div class="flex space-x-4">
+      <button
+        class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+      >
+        Delete
+      </button>
+      <a
+        href="{% url 'hsr_admin:reservation_list' %}"
+        class="bg-slate-500 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded"
+      >
+        Cancel
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock body %}

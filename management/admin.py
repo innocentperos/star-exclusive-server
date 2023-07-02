@@ -3,21 +3,41 @@ from .models import Reservation, Room, Payment, AddOn, RoomCategory, Customer
 
 # Register your models here.
 
+class RoomInline(admin.TabularInline):
+    model = Room 
+    extra = 0
+    exclude = ["description","addon"]
+
+    def __str__(self) -> str:
+        return "Hello"
 
 @admin.register(RoomCategory)
 class RoomCategoryAdminModel(admin.ModelAdmin):
-    list_display = ("pk", "title", "price", "description")
+    list_display = ("pk", "title", "price", "description","rooms")
 
+    inlines = [RoomInline]
+
+    @admin.display
+    def rooms(self, model:RoomCategory, *args, **kwargs):
+        return str(model.rooms.count())
+    
+class ReservationInline(admin.TabularInline):
+    model = Reservation
+    exclude = ["customer_raw","guests","guest_count","customization_request","cancelled_on"]
+    
 
 @admin.register(Room)
 class RoomAdminModel(admin.ModelAdmin):
 
-    list_display = ("pk", "title", "category")
+    list_display = ("pk", "title", "category",)
+    inlines = (ReservationInline,)
+
 
     @admin.display
     def title(self, model, *args, **kwargs):
         return str(model)
-    
+
+
 
 @admin.register(AddOn)
 class AddOnAdminModel(admin.ModelAdmin):

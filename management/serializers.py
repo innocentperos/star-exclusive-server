@@ -6,7 +6,7 @@ from .models import Customer, Reservation, Room, RoomCategory
 class RoomCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomCategory
-        fields = ("pk", "title", "description", "cover")
+        fields = ("pk", "title", "description","price", "cover")
 
 
 class RoomSerializer(serializers.ModelSerializer):

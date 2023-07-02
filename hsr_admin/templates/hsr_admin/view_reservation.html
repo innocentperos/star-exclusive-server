@@ -1,0 +1,40 @@
+{% extends 'hsr_admin/base.html' %}
+
+
+{% block body %}
+<div class=" overflow-x-hidden">
+    <div class="p-6 ">
+      <h2 class="text-2xl mb-4 text-white">Reservation Details</h2>
+      <p class="mb-2 text-white">Reservation ID: {{ reservation.id }}</p>
+      <p class="mb-2 text-white">Arrival Date: {{ reservation.arrival_date }}</p>
+      <p class="mb-2 text-white">Departure Date: {{ reservation.departure_date }}</p>
+      
+      <hr class="my-6 border-white">
+      
+      <h2 class="text-2xl mb-4 text-white">Customer Details</h2>
+      <p class="mb-2 text-white">First Name: {{ reservation.customer.first_name }}</p>
+      <p class="mb-2 text-white">Last Name: {{ reservation.customer.last_name }}</p>
+      <p class="mb-2 text-white">Email Address: {{ reservation.customer.email_address }}</p>
+      <p class="mb-2 text-white">Phone Number: {{ reservation.customer.phone_number }}</p>
+      
+      <hr class="my-6 border-white">
+      
+      <h2 class="text-2xl mb-4 text-white">Room Details</h2>
+      <p class="mb-2 text-white">Category: {{ reservation.room.category.title }}</p>
+      <p class="mb-2 text-white">Room Number: {{ reservation.room.number }}</p>
+      <p class="mb-2 text-white">Room Title: {{ reservation.room.title }}</p>
+      <p class="mb-2 text-white">Room Price: ${{ reservation.room.category.price }}</p>
+    </div>
+  </div>
+  
+  <div class="mt-8 flex justify-start">
+    <a href="{% url 'hsr_admin:view_reservation' reservation.id %}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Edit Reservation</a>
+    <form action="{% url 'hsr_admin:delete_reservation' reservation.id %}" method="POST" class="ml-2 inline-block">
+      {% csrf_token %}
+      <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700">Delete Reservation</button>
+    </form>
+  </div>
+  
+  
+{% endblock body %}
+    

@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from django.utils.datetime_safe import datetime
 
 
@@ -103,6 +104,11 @@ class Payment(models.Model):
     def __str__(self):
         return f"{self.amount} ({self.status.title()})"
 
+def validate_departure_date_greater_than_arrival_date(value):
+    if value <= models.F('arrival_date'):
+        raise ValidationError(_("Departure date must be greater than the arrival date."))
+
+
 class Reservation(models.Model):
     RESERVATION = "reseravtion"
     BOOKING = "booking"
@@ -122,7 +128,7 @@ class Reservation(models.Model):
     # The date the guest will arrive to the hotel
     arrival_date = models.DateTimeField()
     # The date the guest will be leaving the hotel
-    departure_date = models.DateTimeField()
+    departure_date = models.DateTimeField(validators=[validate_departure_date_greater_than_arrival_date])
     #The date the guest made the reservation
     reservated_on = models.DateTimeField(auto_created=True, blank = True)
     # The number of days the guest will be staying at the hotel

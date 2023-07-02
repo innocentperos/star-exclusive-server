@@ -1,0 +1,44 @@
+{% extends 'hsr_admin/base.html' %}
+
+
+{% block body %}
+<div class="p-4">
+    <div class="mb-4">
+      <input type="text" placeholder="Filter" class="w-64 py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+    </div>
+    <table class="min-w-full ">
+      <thead class="">
+        <tr>
+          <th class="py-2 px-4 text-left">ID</th>
+          <th class="py-2 px-4 text-left">Title</th>
+          <th class="py-2 px-4 text-left">Price</th>
+          <th class="py-2 px-4 text-left">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        {% for category in categories %}
+        <tr class="hover:bg-slate-900 hover:text-white">
+            <td class="py-2 px-4"></td>
+            <td class="py-2 px-4">
+              <a href="#" class="text-blue-500 hover:underline">{{category.title}}</a>
+            </td>
+            <td class="py-2 px-4">{{category.price}}</td>
+            <td class="py-2 px-4">
+              <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                Edit
+              </button>
+              <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded ml-2">
+                Delete
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+            
+        
+      </tbody>
+    </table>
+  </div>
+  
+{% endblock body %}
+    

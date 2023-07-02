@@ -1,0 +1,57 @@
+@url = http://localhost:8000/api
+###
+get {{url}}/reservations/1/
+
+HTTP/1.1 200  - OK
+date: Wed, 28 Jun 2023 21:35:01 GMT
+server: WSGIServer/0.2 CPython/3.11.3
+content-type: application/json
+vary: Accept, Cookie
+allow: GET, HEAD, OPTIONS
+x-frame-options: DENY
+content-length: 723
+x-content-type-options: nosniff
+referrer-policy: same-origin
+cross-origin-opener-policy: same-origin
+###
+post {{url}}/reservations/make_reservation/
+Content-Type: application/json
+
+{
+    "first_name":"Innocent",
+    "last_name":"Moses",
+    "phone_number":"09163674665",
+    "email_address":"skykisco8@gmail.com",
+    "id_type":"national_id",
+    "id_number":"22339489885",
+    "arrival_date":"2023-06-29 12:00:00Z",
+    "departure_date":"2023-07-03 16:00.00Z",
+    "guest_count":1,
+    "category":3
+}
+
+HTTP/1.1 200  - OK
+date: Wed, 28 Jun 2023 21:44:39 GMT
+server: WSGIServer/0.2 CPython/3.11.3
+content-type: application/json
+vary: Accept, Cookie
+allow: POST, OPTIONS
+x-frame-options: DENY
+content-length: 27
+x-content-type-options: nosniff
+referrer-policy: same-origin
+cross-origin-opener-policy: same-origin
+###
+http://localhost:8000/api/categories/
+
+HTTP/1.1 200  - OK
+date: Fri, 30 Jun 2023 07:19:28 GMT
+server: WSGIServer/0.2 CPython/3.11.3
+content-type: application/json
+vary: Accept, Origin, Cookie
+allow: GET, HEAD, OPTIONS
+x-frame-options: DENY
+content-length: 522
+x-content-type-options: nosniff
+referrer-policy: same-origin
+cross-origin-opener-policy: same-origin

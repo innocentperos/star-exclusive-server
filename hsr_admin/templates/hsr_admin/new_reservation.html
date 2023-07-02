@@ -1,0 +1,32 @@
+{% extends 'hsr_admin/base.html' %}
+
+
+{% block body %}
+<form method="POST" action="{% url 'hsr_admin:new_reservation' %}">
+    {% csrf_token %}
+    
+    <div class="mb-4">
+      <label for="id_arrival_date" class="block text-white">Arrival Date:</label>
+      {{ form.arrival_date }}
+    </div>
+    
+    <div class="mb-4">
+      <label for="id_departure_date" class="block text-white">Departure Date:</label>
+      {{ form.departure_date }}
+    </div>
+    
+    <div class="mb-4">
+      <label for="id_customer" class="block text-white">Customer:</label>
+      {{ form.customer }}
+    </div>
+    
+    <div class="mb-4">
+      <label for="id_room" class="block text-white">Room:</label>
+      {{ form.room }}
+    </div>
+    
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Add Reservation</button>
+  </form>
+  
+{% endblock body %}
+    
