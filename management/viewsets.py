@@ -130,11 +130,15 @@ class RoomCategoryViewSet(ViewSet):
                 status=status.HTTP_406_NOT_ACCEPTABLE,
             )
 
-        available_rooms = RoomManager.available_rooms(None, arrival_date, departure_date)
+        available_rooms = RoomManager.available_rooms(
+            None, arrival_date, departure_date
+        )
         return Response(
             {
-                "rooms":RoomSerializer(available_rooms, many = True).data,
-                "categories":RoomCategorySerializer(RoomManager.extract_categories(available_rooms), many = True).data,
+                "rooms": RoomSerializer(available_rooms, many=True).data,
+                "categories": RoomCategorySerializer(
+                    RoomManager.extract_categories(available_rooms), many=True
+                ).data,
             }
         )
 

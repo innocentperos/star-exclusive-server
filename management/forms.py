@@ -16,7 +16,10 @@ class NewCustomerForm(forms.ModelForm):
 
 
 class NewReservationForm(forms.ModelForm):
-    category = forms.ModelChoiceField(queryset=RoomCategory.objects.all(), required=True)
+    category = forms.ModelChoiceField(
+        queryset=RoomCategory.objects.all(), required=True
+    )
+
     class Meta:
         model = Reservation
         fields = (

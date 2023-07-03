@@ -6,25 +6,34 @@ import management.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('management', '0006_rename_canceled_reservation_cancelled_and_more'),
+        ("management", "0006_rename_canceled_reservation_cancelled_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reservation',
-            name='departure_date',
-            field=models.DateTimeField(validators=[management.models.validate_departure_date_greater_than_arrival_date]),
+            model_name="reservation",
+            name="departure_date",
+            field=models.DateTimeField(
+                validators=[
+                    management.models.validate_departure_date_greater_than_arrival_date
+                ]
+            ),
         ),
         migrations.AlterField(
-            model_name='reservation',
-            name='payment',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reservation', to='management.payment'),
+            model_name="reservation",
+            name="payment",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="reservation",
+                to="management.payment",
+            ),
         ),
         migrations.AlterField(
-            model_name='reservation',
-            name='reservated_on',
+            model_name="reservation",
+            name="reservated_on",
             field=models.DateTimeField(auto_created=True, blank=True),
         ),
     ]

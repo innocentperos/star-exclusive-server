@@ -1,0 +1,55 @@
+{% extends "hsr_admin/base.html"%}
+
+{% block title %}
+New Category
+{%endblock%}
+{% block body %}
+
+<div class="text-red-500 text-center">
+  <span>{{message}}</span>
+</div>
+<form action="" method="post" enctype>
+  
+  {% csrf_token %}
+  <div class="flex lg:px-16 flex-col px-4 space-y-4">
+    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
+      <div class="flex flex-col w-full">
+        <label class="pt-8 mb-2 block" for="">Title</label>
+        <input class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600" type="text" name="title" />
+      </div>
+
+      <div class="flex flex-col w-full">
+        <label class="pt-8 mb-2 block" for="">Price</label>
+        <input class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600" type="number" name="price" />
+      </div>
+    </div>
+
+    <div class="my-4">
+      <label class="pt-8 mb-2 block" for="Description">Description</label>
+      <textarea class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600" name="description" value="">
+          </textarea>
+
+    </div>
+
+    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
+      <div class="flex flex-col w-full">
+        <label class="pt-8 mb-2 block" for="">Cover Image</label>
+        <input class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600" type="file" name="cover" value="{{form.departure_date}}" />
+      </div>
+
+      <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
+        <div class="flex flex-col w-full">
+          <label class="pt-8 mb-2 block" for="">Add Rooms</label>
+          <input class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600" type="number"
+          name="rooms" value="1" />
+        </div>
+      </div>
+    </div>
+
+    <div class="p-4 my-6 block">
+      <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+        Add Category
+      </button>
+    </div>
+</form>
+{% endblock %}

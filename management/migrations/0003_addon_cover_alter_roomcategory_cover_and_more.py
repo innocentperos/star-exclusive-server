@@ -4,25 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('management', '0002_roomcategory_cover'),
+        ("management", "0002_roomcategory_cover"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='addon',
-            name='cover',
-            field=models.FileField(blank=True, upload_to='rooms'),
+            model_name="addon",
+            name="cover",
+            field=models.FileField(blank=True, upload_to="rooms"),
         ),
         migrations.AlterField(
-            model_name='roomcategory',
-            name='cover',
-            field=models.FileField(blank=True, upload_to='rooms'),
+            model_name="roomcategory",
+            name="cover",
+            field=models.FileField(blank=True, upload_to="rooms"),
         ),
         migrations.AlterField(
-            model_name='roomcategory',
-            name='description',
+            model_name="roomcategory",
+            name="description",
             field=models.TextField(blank=True),
         ),
     ]

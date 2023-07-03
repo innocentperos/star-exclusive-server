@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q, F
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
-
+from django.utils.datetime_safe import datetime
 
 from management.models import RoomCategory, Room, Customer, Reservation
 from management.managers import RoomManager
@@ -17,6 +17,7 @@ from .forms import (
     CustomerForm,
     LoginForm,
     ReservationForm,
+    CategoryForm,
 )
 
 # Create your views here.
@@ -42,7 +43,7 @@ def index(request: HttpRequest):
             )
             if user.check_password(data["password"]):
                 login(request, user)
-                return redirect(home)
+                return redirect("hsr_admin:home")
         except User.DoesNotExist:
             pass
 
@@ -71,6 +72,37 @@ def category_list(request: HttpRequest):
         template_name="hsr_admin/categories.html",
         context={"categories": _categories},
     )
+
+
+def new_category(request: HttpRequest):
+    if request.method == "GET":
+        return render(
+            request,
+            "hsr_admin/new_category.html",
+        )
+
+    form = CategoryForm(request.POST, request.FILES)
+
+    if not form.is_valid():
+        return render(
+            request,
+            "hsr_admin/new_category.html",
+            context={"message": "Please provide all the fields", "form": request.POST},
+        )
+    category = form.save()
+
+    rooms = request.POST.get("rooms")
+
+    if rooms:
+        try:
+            rooms = int(rooms)
+            for i in range(rooms):
+                room = Room(category=category)
+                room.save()
+        except Exception as e:
+            pass
+
+    return redirect("hsr_admin:category_list")
 
 
 def reservation_list(request: HttpRequest):
@@ -151,7 +183,7 @@ def check_availability(request: HttpRequest):
     _colors = {}
 
     for cat in categories:
-        _colors[cat.pk] = colors[cat.pk % len(categories)]
+        _colors[cat.pk] = colors[cat.pk % len(categories) + 1]
 
     return render(
         request,
@@ -168,7 +200,6 @@ def check_availability(request: HttpRequest):
 
 def new_reservation(request: HttpRequest):
     if request.method == "POST":
-
         form = CheckAvailabilityForm(request.POST)
         customer_form = CustomerForm(request.POST)
         booking_form = BookingForm(request.POST)
@@ -182,8 +213,8 @@ def new_reservation(request: HttpRequest):
                     "form": request.POST,
                 },
             )
-        
-        #Check the reservation Form
+
+        # Check the reservation Form
         data = form.cleaned_data
 
         arrival = parse_datetime(f"{data['arrival_date']} {data['arrival_time']}")
@@ -208,7 +239,7 @@ def new_reservation(request: HttpRequest):
                     "form": request.POST,
                 },
             )
-        
+
         if not customer_form.is_valid():
             rooms = RoomManager.available_rooms(None, arrival, departure)
             categories = RoomManager.extract_categories(rooms)
@@ -237,7 +268,7 @@ def new_reservation(request: HttpRequest):
                     "colors": _colors,
                 },
             )
-        
+
         if not booking_form.is_valid():
             rooms = RoomManager.available_rooms(None, arrival, departure)
             categories = RoomManager.extract_categories(rooms)
@@ -266,35 +297,50 @@ def new_reservation(request: HttpRequest):
                     "colors": _colors,
                 },
             )
-        
+
         customer_data = customer_form.cleaned_data
         customer = Customer(
-            first_name = customer_data["first_name"],
-            last_name = customer_data["last_name"],
-            email_address = customer_data["email_address"],
-            phone_number = customer_data["phone_number"],
-            id_type = customer_data["identification_type"],
-            id_number = customer_data["identification_number"],
+            first_name=customer_data["first_name"],
+            last_name=customer_data["last_name"],
+            email_address=customer_data["email_address"],
+            phone_number=customer_data["phone_number"],
+            id_type=customer_data["identification_type"],
+            id_number=customer_data["identification_number"],
         )
 
         reservation_data = form.cleaned_data
         booking_data = booking_form.cleaned_data
 
+        try:
+            room = Room.objects.get(pk=booking_data["room"])
+        except Room.DoesNotExist:
+            return render(
+                request,
+                "hsr_admin/new_reservation.html",
+                context={
+                    "adding": True,
+                    "form": request.POST,
+                    "categories": categories,
+                    "rooms": rooms,
+                    "colors": _colors,
+                },
+            )
+
         reservation = Reservation(
-            customer = customer,
-            reservation_type = Reservation.RESERVATION,
-            arrival_date = arrival,
-            departure_date = departure,
-            paid = True,
-            room = booking_data["room"]
+            customer=customer,
+            reservation_type=Reservation.RESERVATION,
+            arrival_date=arrival,
+            departure_date=departure,
+            reservated_on=datetime.now(),
+            paid=True,
+            room=room,
         )
 
         with transaction.atomic():
-
             customer.save()
             reservation.save()
 
-            return redirect(reservation_list)
+            return redirect("hsr_admin:reservation_list")
 
     else:
         form = ReservationForm()

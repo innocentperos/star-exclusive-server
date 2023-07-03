@@ -6,86 +6,203 @@ import django.utils.datetime_safe
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Customer',
+            name="Customer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('first_name', models.CharField(max_length=25)),
-                ('last_name', models.CharField(max_length=25)),
-                ('id_type', models.CharField(max_length=255)),
-                ('id_number', models.CharField(max_length=25)),
-                ('email_address', models.CharField(max_length=255)),
-                ('phone_number', models.CharField(max_length=12)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("first_name", models.CharField(max_length=25)),
+                ("last_name", models.CharField(max_length=25)),
+                ("id_type", models.CharField(max_length=255)),
+                ("id_number", models.CharField(max_length=25)),
+                ("email_address", models.CharField(max_length=255)),
+                ("phone_number", models.CharField(max_length=12)),
             ],
         ),
         migrations.CreateModel(
-            name='Payment',
+            name="Payment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.FloatField()),
-                ('date', models.DateTimeField(default=django.utils.datetime_safe.datetime.now)),
-                ('status', models.CharField(choices=[('pending', 'pending'), ('success', 'success'), ('failed', 'failed')], default='pending', max_length=25)),
-                ('description', models.JSONField(blank=True, default=dict, null=True)),
-                ('transaction_id', models.CharField(blank=True, max_length=50, null=True, unique=True)),
-                ('transaction_reference', models.CharField(blank=True, max_length=50, null=True, unique=True)),
-                ('customer', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='payments', to='management.customer')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("amount", models.FloatField()),
+                (
+                    "date",
+                    models.DateTimeField(
+                        default=django.utils.datetime_safe.datetime.now
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "pending"),
+                            ("success", "success"),
+                            ("failed", "failed"),
+                        ],
+                        default="pending",
+                        max_length=25,
+                    ),
+                ),
+                ("description", models.JSONField(blank=True, default=dict, null=True)),
+                (
+                    "transaction_id",
+                    models.CharField(blank=True, max_length=50, null=True, unique=True),
+                ),
+                (
+                    "transaction_reference",
+                    models.CharField(blank=True, max_length=50, null=True, unique=True),
+                ),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="payments",
+                        to="management.customer",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='RoomCategory',
+            name="RoomCategory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('price', models.FloatField()),
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("price", models.FloatField()),
+                ("title", models.CharField(max_length=255)),
+                ("description", models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name='Room',
+            name="Room",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.CharField(blank=True, max_length=14)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('unique', models.BooleanField(default=False)),
-                ('addon', models.JSONField(blank=True, default=dict)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to='management.roomcategory')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.CharField(blank=True, max_length=14)),
+                ("description", models.TextField(blank=True, null=True)),
+                ("unique", models.BooleanField(default=False)),
+                ("addon", models.JSONField(blank=True, default=dict)),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rooms",
+                        to="management.roomcategory",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Reservation',
+            name="Reservation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('reservated_on', models.DateTimeField(auto_created=True)),
-                ('reservation_type', models.CharField(choices=[('reseravtion', 'reseravtion'), ('booking', 'booking')], max_length=25)),
-                ('arrival_date', models.DateTimeField()),
-                ('departure_date', models.DateTimeField()),
-                ('stay', models.IntegerField(default=1)),
-                ('guest_count', models.IntegerField(default=1)),
-                ('guests', models.JSONField(blank=True, default=list)),
-                ('customization_request', models.JSONField(blank=True, default=dict, null=True)),
-                ('paid', models.BooleanField(default=False)),
-                ('canceled', models.BooleanField(default=False)),
-                ('canceled_on', models.DateTimeField(blank=True, null=True)),
-                ('payment', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reservation', to='management.payment')),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reservations', to='management.room')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("reservated_on", models.DateTimeField(auto_created=True)),
+                (
+                    "reservation_type",
+                    models.CharField(
+                        choices=[
+                            ("reseravtion", "reseravtion"),
+                            ("booking", "booking"),
+                        ],
+                        max_length=25,
+                    ),
+                ),
+                ("arrival_date", models.DateTimeField()),
+                ("departure_date", models.DateTimeField()),
+                ("stay", models.IntegerField(default=1)),
+                ("guest_count", models.IntegerField(default=1)),
+                ("guests", models.JSONField(blank=True, default=list)),
+                (
+                    "customization_request",
+                    models.JSONField(blank=True, default=dict, null=True),
+                ),
+                ("paid", models.BooleanField(default=False)),
+                ("canceled", models.BooleanField(default=False)),
+                ("canceled_on", models.DateTimeField(blank=True, null=True)),
+                (
+                    "payment",
+                    models.OneToOneField(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="reservation",
+                        to="management.payment",
+                    ),
+                ),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reservations",
+                        to="management.room",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='AddOn',
+            name="AddOn",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField(blank=True, default='')),
-                ('price', models.FloatField()),
-                ('render', models.TextField(blank=True, null=True)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='addons', to='management.roomcategory')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField(blank=True, default="")),
+                ("price", models.FloatField()),
+                ("render", models.TextField(blank=True, null=True)),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="addons",
+                        to="management.roomcategory",
+                    ),
+                ),
             ],
         ),
     ]

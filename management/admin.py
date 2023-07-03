@@ -3,47 +3,64 @@ from .models import Reservation, Room, Payment, AddOn, RoomCategory, Customer
 
 # Register your models here.
 
+
 class RoomInline(admin.TabularInline):
-    model = Room 
+    model = Room
     extra = 0
-    exclude = ["description","addon"]
+    exclude = ["description", "addon"]
 
     def __str__(self) -> str:
         return "Hello"
 
+
 @admin.register(RoomCategory)
 class RoomCategoryAdminModel(admin.ModelAdmin):
-    list_display = ("pk", "title", "price", "description","rooms")
+    list_display = ("pk", "title", "price", "description", "rooms")
 
     inlines = [RoomInline]
 
     @admin.display
-    def rooms(self, model:RoomCategory, *args, **kwargs):
+    def rooms(self, model: RoomCategory, *args, **kwargs):
         return str(model.rooms.count())
-    
+
+
 class ReservationInline(admin.TabularInline):
     model = Reservation
-    exclude = ["customer_raw","guests","guest_count","customization_request","cancelled_on"]
-    
+    exclude = [
+        "customer_raw",
+        "guests",
+        "guest_count",
+        "customization_request",
+        "cancelled_on",
+    ]
+
 
 @admin.register(Room)
 class RoomAdminModel(admin.ModelAdmin):
-
-    list_display = ("pk", "title", "category",)
+    list_display = (
+        "pk",
+        "title",
+        "category",
+    )
     inlines = (ReservationInline,)
-
 
     @admin.display
     def title(self, model, *args, **kwargs):
         return str(model)
 
 
-
 @admin.register(AddOn)
 class AddOnAdminModel(admin.ModelAdmin):
-    list_display = ("pk","title","price","category", "description",)
+    list_display = (
+        "pk",
+        "title",
+        "price",
+        "category",
+        "description",
+    )
 
     search_fields = ("title",)
+
 
 @admin.register(Customer)
 class CustomerAdminModel(admin.ModelAdmin):
@@ -56,21 +73,28 @@ class CustomerAdminModel(admin.ModelAdmin):
         "phone_number",
     )
 
-    search_fields = ("email_address","id_number","phone_number","first_name","last_name")
-  
+    search_fields = (
+        "email_address",
+        "id_number",
+        "phone_number",
+        "first_name",
+        "last_name",
+    )
+
+
 @admin.register(Reservation)
 class ReservationAdminModel(admin.ModelAdmin):
-  list_display = (
-      "room",
-      "customer",
-      "reservation_type",
-      "arrival_date",
-      "departure_date",
-      "paid",
-      "payment",
-      "reservated_on",
-      "guest_count",
-      "cancelled"
+    list_display = (
+        "room",
+        "customer",
+        "reservation_type",
+        "arrival_date",
+        "departure_date",
+        "paid",
+        "payment",
+        "reservated_on",
+        "guest_count",
+        "cancelled",
     )
-    
-  search_fields = ("customer__first_name","room__number")
+
+    search_fields = ("customer__first_name", "room__number")

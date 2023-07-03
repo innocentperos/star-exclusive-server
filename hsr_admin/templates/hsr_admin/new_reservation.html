@@ -4,8 +4,6 @@
   <span class="text-red-600">{{message}}</span>
 </div>
 
-{{form}}
-
 {% if adding %}
 <form method="POST" action="{% url 'hsr_admin:new_reservation' %}">
   {% csrf_token %} {% include 'hsr_admin/reservation_date_form.html' %}
@@ -49,7 +47,7 @@
       
   </div>
   <input type="room" hidden name="room" id="room">
-  <div class="pt-16 px-4 lg:px-16 grid grid-cols-5 lg:grid-cols-12 gap-4 ">
+  <div class="pt-16 px-4 lg:px-16 grid grid-cols-3 md:grid-cols-5 lg:grid-cols-12 gap-4 ">
     {% for room in rooms %}
       <div room-id = "{{room.id}}" room-category="{{room.category.id}}" class="room_item w-full {{colors|get:room.category.pk}} rounded-md">
         <div class=" relative overflow-hidden w-full aspect-square flex items-end justify-center py-4 px-1 rounded-md">

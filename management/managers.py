@@ -1,11 +1,9 @@
-
 from .models import Room, RoomCategory, Reservation
 from django.utils.datetime_safe import datetime
 from django.db.models import Q, QuerySet
 
 
 class RoomManager:
-
     @staticmethod
     def available_rooms(
         category: RoomCategory, start_date: datetime, end_date: datetime
@@ -25,22 +23,18 @@ class RoomManager:
         # Get all the rooms under that category and remove each room of each reservation
         # rooms: QuerySet = category.rooms
 
-
-        
-        
         rooms = Room.objects.all()
         if category:
-            rooms = Room.objects.filter(category = category)
+            rooms = Room.objects.filter(category=category)
 
         for reservation in reservations:
             rooms = rooms.exclude(pk=reservation.room.pk)
-            
+
         # return the remaining rooms
         return rooms
 
     @staticmethod
-    def extract_categories(rooms:list[Room])->list[RoomCategory]:
-
+    def extract_categories(rooms: list[Room]) -> list[RoomCategory]:
         categories = []
         categories_id = set()
 
@@ -50,4 +44,3 @@ class RoomManager:
                 categories_id.add(room.category.pk)
 
         return categories
-    

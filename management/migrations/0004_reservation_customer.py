@@ -5,15 +5,19 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('management', '0003_addon_cover_alter_roomcategory_cover_and_more'),
+        ("management", "0003_addon_cover_alter_roomcategory_cover_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='reservation',
-            name='customer',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reservations', to='management.customer'),
+            model_name="reservation",
+            name="customer",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="reservations",
+                to="management.customer",
+            ),
         ),
     ]

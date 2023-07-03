@@ -4,20 +4,19 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('management', '0005_reservation_customer_raw'),
+        ("management", "0005_reservation_customer_raw"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='reservation',
-            old_name='canceled',
-            new_name='cancelled',
+            model_name="reservation",
+            old_name="canceled",
+            new_name="cancelled",
         ),
         migrations.RenameField(
-            model_name='reservation',
-            old_name='canceled_on',
-            new_name='cancelled_on',
+            model_name="reservation",
+            old_name="canceled_on",
+            new_name="cancelled_on",
         ),
     ]

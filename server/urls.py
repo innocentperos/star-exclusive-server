@@ -23,10 +23,12 @@ from django.conf.urls.static import static
 from .api import router
 from hsr_admin import urls
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("api/", include(router.urls)),
-    path("", include(urls), name="hsr_admin")
-]  + static(settings.STATIC_URL, 
-document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,
-document_root = settings.MEDIA_ROOT)
+urlpatterns = (
+    [
+        path("admin/", admin.site.urls),
+        path("api/", include(router.urls)),
+        path("", include(urls), name="hsr_admin"),
+    ]
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+)
