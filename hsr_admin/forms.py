@@ -22,3 +22,19 @@ class CheckAvailabilityForm(forms.Form):
 
     departure_date = forms.DateField()
     departure_time = forms.TimeField()
+
+    
+
+class CustomerForm(forms.Form):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email_address = forms.EmailField()
+    phone_number = forms.CharField()
+    identification_type = forms.CharField()
+    identification_number = forms.CharField()
+
+class BookingForm(forms.Form):
+    room = forms.IntegerField()
+
+
+

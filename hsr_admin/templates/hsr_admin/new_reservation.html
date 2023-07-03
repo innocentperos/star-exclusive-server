@@ -4,6 +4,8 @@
   <span class="text-red-600">{{message}}</span>
 </div>
 
+{{form}}
+
 {% if adding %}
 <form method="POST" action="{% url 'hsr_admin:new_reservation' %}">
   {% csrf_token %} {% include 'hsr_admin/reservation_date_form.html' %}
