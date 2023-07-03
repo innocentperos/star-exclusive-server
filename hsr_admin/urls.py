@@ -8,6 +8,8 @@ urlpatterns = [
     path("categories/", views.category_list, name="category_list"),
     path('reservations/', views.reservation_list, name='reservation_list'),
     path('reservations/new/', views.new_reservation, name='new_reservation'),
+    path('reservations/check/', views.check_availability, name='check_availability'),
+
     path('reservations/<int:pk>/delete/', views.delete_reservation, name='delete_reservation'),
     path('reservations/<int:pk>/', views.view_reservation, name='view_reservation'),
 ]

@@ -14,4 +14,11 @@ class ReservationForm(forms.ModelForm):
 
         model = Reservation
         fields = "__all__"
-        
+
+class CheckAvailabilityForm(forms.Form):
+
+    arrival_date = forms.DateField()
+    arrival_time = forms.TimeField()
+
+    departure_date = forms.DateField()
+    departure_time = forms.TimeField()

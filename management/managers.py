@@ -39,7 +39,7 @@ class RoomManager:
         return rooms
 
     @staticmethod
-    def extract_categories(rooms:list[Room]):
+    def extract_categories(rooms:list[Room])->list[RoomCategory]:
 
         categories = []
         categories_id = set()

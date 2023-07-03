@@ -128,7 +128,9 @@ class Reservation(models.Model):
     # The date the guest will arrive to the hotel
     arrival_date = models.DateTimeField()
     # The date the guest will be leaving the hotel
-    departure_date = models.DateTimeField(validators=[validate_departure_date_greater_than_arrival_date])
+    departure_date = models.DateTimeField()
+    # departure_date = models.DateTimeField(validators=[validate_departure_date_greater_than_arrival_date])
+
     #The date the guest made the reservation
     reservated_on = models.DateTimeField(auto_created=True, blank = True)
     # The number of days the guest will be staying at the hotel

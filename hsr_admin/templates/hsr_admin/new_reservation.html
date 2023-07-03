@@ -1,32 +1,114 @@
-{% extends 'hsr_admin/base.html' %}
+{% extends 'hsr_admin/base.html' %} {% block body %}
+{% load static %}
+<div class="text-center py-8">
+  <span class="text-red-600">{{message}}</span>
+</div>
 
-
-{% block body %}
+{% if adding %}
 <form method="POST" action="{% url 'hsr_admin:new_reservation' %}">
-    {% csrf_token %}
-    
-    <div class="mb-4">
-      <label for="id_arrival_date" class="block text-white">Arrival Date:</label>
-      {{ form.arrival_date }}
-    </div>
-    
-    <div class="mb-4">
-      <label for="id_departure_date" class="block text-white">Departure Date:</label>
-      {{ form.departure_date }}
-    </div>
-    
-    <div class="mb-4">
-      <label for="id_customer" class="block text-white">Customer:</label>
-      {{ form.customer }}
-    </div>
-    
-    <div class="mb-4">
-      <label for="id_room" class="block text-white">Room:</label>
-      {{ form.room }}
-    </div>
-    
-    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Add Reservation</button>
-  </form>
+  {% csrf_token %} {% include 'hsr_admin/reservation_date_form.html' %}
+
   
-{% endblock body %}
+  {% comment %}
+  <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4 px-16">
+    <div class="flex flex-col w-full">
+      <label for="">Room Category</label>
+      <select
+        min="12/12/2023"
+        class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+        type="email"
+        name="email_address"
+      >
+        
+        {% for category in categories %}
+        <option class="bg-slate-800 p-4 block" value="{{category.pk}}">
+          {{category.title }} ({{category.price}})
+        </option>
+        {% endfor %}
+          
+        
+      </select>
+    </div>
+  </div>
+  {% endcomment %}
     
+
+  <div class="flex flex-wrap px-4 lg:px-16 mt-16 space-x-8">
+    
+    {% for category in categories %}
+    <div class="flex flex-row space-x-2 items-center shrink-0">
+      <div class="h-10 aspect-square {{colors|get:category.pk}}"></div>
+      <div class="flex flex-col">
+        <span>{{category.title }} </span>
+        <span>N {{category.price }} </span>
+      </div>
+    </div>
+    {% endfor %}
+      
+  </div>
+  <input type="room" hidden name="room" id="room">
+  <div class="pt-16 px-4 lg:px-16 grid grid-cols-5 lg:grid-cols-12 gap-4 ">
+    {% for room in rooms %}
+      <div room-id = "{{room.id}}" room-category="{{room.category.id}}" class="room_item w-full {{colors|get:room.category.pk}} rounded-md">
+        <div class=" relative overflow-hidden w-full aspect-square flex items-end justify-center py-4 px-1 rounded-md">
+          <img src="{{room.category.cover.url}}" class="absolute top-0 left-0 h-full w-full object-cover" alt="">
+          
+        </div>
+        <span class="block p-2">{{room}}</span>
+      </div>
+    {% endfor %}
+      
+
+  </div>
+
+  <script>
+
+    (function(){
+      const roomInput = document.getElementById("room")
+      const rooms = document.querySelectorAll(".room_item")
+
+      rooms.forEach(room => {
+        room.addEventListener("click", ()=>{
+          let id = room.getAttribute("room-id")
+          roomInput.value = id
+
+          let pre = document.querySelector(".room_item.selected")
+          if(pre)pre.classList.remove("border" ,"boreder-slate-500" ,"border-4","selected")
+
+          room.classList.add("border" ,"boreder-slate-500" ,"border-4","selected")
+
+        })
+      });
+    })()
+
+  </script>
+
+  <span class="text-2xl mt-16 block ml-16">Customer/Guest Information</span>
+
+  {% include 'hsr_admin/guest_form.html' %}
+  <div class="mr-auto my-6 px-4 lg:px-16">
+    <button
+      type="submit"
+      class="px-4 py-4 bg-indigo-500 text-white rounded hover:bg-indigo-700 duration-300"
+    >
+      Make Reservation
+    </button>
+  </div>
+</form>
+
+{% else %}
+
+<form method="POST" action="{% url 'hsr_admin:check_availability' %}">
+  {% csrf_token %} {% include 'hsr_admin/reservation_date_form.html' %}
+
+  <div class="mr-auto my-6 px-16">
+    <button
+      type="submit"
+      class="px-4 py-4 bg-indigo-500 text-white rounded hover:bg-indigo-700 duration-300"
+    >
+      Check Room Avialable
+    </button>
+  </div>
+</form>
+
+{% endif %} {% endblock body %}

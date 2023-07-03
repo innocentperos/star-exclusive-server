@@ -1,0 +1,50 @@
+
+<div class="flex lg:px-16 flex-col px-4 space-y-4">
+    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
+      <div class="flex flex-col w-full">
+        <label for="">Arrival Date</label>
+        <input
+        min="12/12/2023"
+        class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+        type="date"
+        name="arrival_date"
+        value="{{form.arrival_date}}"
+      />
+      </div>
+
+      <div class="flex flex-col w-full">
+        <label for="">Arrival Time</label>
+        <input
+        min="12/12/2023"
+        class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+        type="time"
+        name="arrival_time"
+        value="{{form.arrival_time}}"
+      />
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
+      <div class="flex flex-col w-full">
+        <label for="">Departure Date</label>
+        <input
+        min="12/12/2023"
+        class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+        type="date"
+        name="departure_date"
+        value="{{form.departure_date}}"
+      />
+      </div>
+
+      <div class="flex flex-col w-full">
+        <label for="">Departure Time</label>
+        <input
+        min="12/12/2023"
+        class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+        type="time"
+        name="departure_time"
+        value="{{form.departure_time}}"
+      />
+      </div>
+    </div>
+  </div>
