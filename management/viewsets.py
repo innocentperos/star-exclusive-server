@@ -8,8 +8,11 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework import status
 
 from django.db.models import Q, F
+from django.db import transaction
 from django.utils.dateparse import parse_datetime
 from django.utils.datetime_safe import datetime
+
+from hsr_admin.forms import BookingForm, CheckAvailabilityForm, CustomerForm
 
 from .forms import NewCustomerForm, NewReservationForm
 
@@ -21,7 +24,7 @@ from .serializers import (
     SecureReservationSerializer,
 )
 
-from .models import Reservation, Room, RoomCategory
+from .models import Customer, Reservation, Room, RoomCategory
 from .managers import RoomManager
 
 
@@ -181,27 +184,118 @@ class ReservationViewSet(ViewSet):
 
     @action(("POST",), detail=False)
     def make_reservation(self, request: Request):
-        customer_form = NewCustomerForm(request.data)
-        reservation_form = NewReservationForm(request.data)
+        form = CheckAvailabilityForm(request.data)
+        customer_form = CustomerForm(request.data)
+        booking_form = BookingForm(request.data)
 
+        if not form.is_valid():
+            return Response(
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data= {
+                    "detail":"Provide all field in the check availability form",
+                    "errors": form.errors
+                }
+            )
+
+        # Check the reservation Form
+        data = form.cleaned_data
+
+        arrival = parse_datetime(f"{data['arrival_date']} {data['arrival_time']}")
+        departure = parse_datetime(f"{data['departure_date']} {data['departure_time']}")
+
+        if not arrival or not departure:
+            return Response(
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data= {
+                    "detail":"Please provide the reservation arrival and departure date and date"
+                }
+            )
+        now = datetime.now()
+
+        if arrival <= now:
+
+            return Response(
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data= {
+                    "detail":"Please arrival date most be be ahead of current date"
+                }
+            )
+        
+        if departure <= arrival:
+
+            return Response(
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data= {
+                    "detail":"Please departure date most be be ahead of arrival date"
+                }
+            )
+        
         if not customer_form.is_valid():
+            
             return Response(
-                {
-                    "detail": "Customer data field is missing",
-                    "form": "customer",
-                    "error": customer_form.errors,
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data= {
+                    "detail":"Please fill in the customer form"
                 }
             )
 
-        if not reservation_form.is_valid():
+        if not booking_form.is_valid():
+            
             return Response(
-                {
-                    "detail": "Customer data field is missing",
-                    "form": "reservation",
-                    "error": reservation_form.errors,
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data= {
+                    "detail":"Please select a room category"
                 }
             )
 
-        return Response({"detail": "Dummy response"})
+        customer_data = customer_form.cleaned_data
+        customer = Customer(
+            first_name=customer_data["first_name"],
+            last_name=customer_data["last_name"],
+            email_address=customer_data["email_address"],
+            phone_number=customer_data["phone_number"],
+            id_type=customer_data["identification_type"],
+            id_number=customer_data["identification_number"],
+        )
 
-        pass
+        reservation_data = form.cleaned_data
+        booking_data = booking_form.cleaned_data
+
+        try:
+            category = RoomCategory.objects.get(pk=booking_data["room"])
+            rooms = RoomManager.available_rooms(category, arrival, departure)
+
+            if rooms.count() < 1:
+                return Response(
+                    status=status.HTTP_406_NOT_ACCEPTABLE,
+                    data= {"detail":"Please select a different room, selected room is not available"}
+                )
+            
+            room = rooms.first()
+            
+        except RoomCategory.DoesNotExist:
+            return Response(
+                    status=status.HTTP_406_NOT_ACCEPTABLE,
+                    data= {"detail":"Please select a different room, selected room is not available"}
+                )
+
+        reservation = Reservation(
+            customer=customer,
+            reservation_type=Reservation.RESERVATION,
+            arrival_date=arrival,
+            departure_date=departure,
+            reservated_on=datetime.now(),
+            paid=True,
+            room=room,
+        )
+
+        with transaction.atomic():
+            customer.save()
+            reservation.save()
+
+            return Response(
+                SecureReservationSerializer(
+                reservation
+                ).data
+            )
+
