@@ -22,22 +22,24 @@ Content-Type: application/json
     "last_name":"Moses",
     "phone_number":"09163674665",
     "email_address":"skykisco8@gmail.com",
-    "id_type":"national_id",
-    "id_number":"22339489885",
-    "arrival_date":"2023-06-29 12:00:00Z",
-    "departure_date":"2023-07-03 16:00.00Z",
+    "identification_type":"national_id",
+    "identification_number":"22339489885",
+    "arrival_date":"2023-07-10",
+    "arrival_time":"12:00:00",
+    "departure_date":"2023-07-13 ",
+    "departure_time":"16:00",
     "guest_count":1,
-    "category":3
+    "room":3
 }
 
 HTTP/1.1 200  - OK
-date: Wed, 28 Jun 2023 21:44:39 GMT
+date: Wed, 05 Jul 2023 07:02:36 GMT
 server: WSGIServer/0.2 CPython/3.11.3
 content-type: application/json
-vary: Accept, Cookie
+vary: Accept, Origin, Cookie
 allow: POST, OPTIONS
 x-frame-options: DENY
-content-length: 27
+content-length: 686
 x-content-type-options: nosniff
 referrer-policy: same-origin
 cross-origin-opener-policy: same-origin

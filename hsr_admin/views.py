@@ -13,11 +13,14 @@ from management.managers import RoomManager
 
 from .forms import (
     BookingForm,
+    CategoryUpdateForm,
     CheckAvailabilityForm,
     CustomerForm,
     LoginForm,
     ReservationForm,
     CategoryForm,
+    RoomFilterForm,
+    RoomUpdateForm,
 )
 
 # Create your views here.
@@ -110,6 +113,146 @@ def reservation_list(request: HttpRequest):
     return render(
         request, "hsr_admin/reservation_list.html", {"reservations": reservations}
     )
+
+
+def room_list(request: HttpRequest):
+    form = RoomFilterForm(request.GET)
+
+    if form.is_valid():
+        data = form.cleaned_data
+        start_date = parse_datetime(f"{data['start_date']} {data['start_time']}")
+        end_date = parse_datetime(f"{data['end_date']} {data['end_time']}")
+
+        rooms = RoomManager.taken_rooms(start_date=start_date, end_date=end_date)
+    else:
+        rooms = Room.objects.all()
+
+    categories = RoomCategory.objects.all()
+
+    colors = [
+        "bg-red-700",
+        "bg-indigo-700",
+        "bg-green-700",
+        "bg-purple-700",
+        "bg-pink-700",
+        "bg-violet-900",
+        "bg-brown-700",
+        "bg-slate-900",
+    ]
+    _colors = {}
+
+    for cat in categories:
+        _colors[cat.pk] = colors[cat.pk % len(categories)]
+
+    return render(
+        request,
+        "hsr_admin/rooms.html",
+        {
+            "categories": categories,
+            "rooms": rooms,
+            "colors": _colors,
+            "form": request.GET,
+        },
+    )
+
+
+def view_room(request: HttpRequest, pk):
+    try:
+        room = Room.objects.get(pk=pk)
+        categories = RoomCategory.objects.all()
+
+        if request.method == "POST":
+            form = RoomUpdateForm(request.POST)
+            if not form.is_valid():
+                return render(
+                    request,
+                    "hsr_admin/view_room.html",
+                    {
+                        "room": room,
+                        "reservations": room.reservations.all(),
+                        "categories": categories,
+                        "error": "Please provide all field",
+                    },
+                )
+
+            data = form.data
+
+            room.category = categories.get(pk=int(data.get("category")))
+            room.number = data.get("room_number")
+            room.description = data.get("description")
+
+            room.save()
+
+            return render(
+                request,
+                "hsr_admin/view_room.html",
+                {
+                    "room": room,
+                    "reservations": room.reservations.all(),
+                    "categories": categories,
+                    "success": "Room detail Updated",
+                },
+            )
+
+        return render(
+            request,
+            "hsr_admin/view_room.html",
+            {
+                "room": room,
+                "reservations": room.reservations.all(),
+                "categories": categories,
+            },
+        )
+    except Room.DoesNotExist:
+        return redirect("hsr_admin:room_list")
+
+
+def view_category(request: HttpRequest, pk):
+    try:
+        category = RoomCategory.objects.get(pk=pk)
+
+        if request.method == "POST":
+            form = CategoryUpdateForm(request.POST)
+            if not form.is_valid():
+                return render(
+                    request,
+                    "hsr_admin/view_category.html",
+                    {
+                        "rooms": category.rooms.all(),
+                        "category": category,
+                        "error": "Please provide all field",
+                    },
+                )
+
+            data = form.cleaned_data
+
+            category.title = data.get("title")
+            category.description = data.get("description")
+            category.price = data.get("price")
+            category.save()
+
+            return render(
+                request,
+                "hsr_admin/view_category.html",
+                {
+                    "rooms": category.rooms.all(),
+                    "category": category,
+                    "success": "CAtegory detail Updated",
+                },
+            )
+        elif request.method == "PUT":
+
+            print(request.body)
+        return render(
+            request,
+            "hsr_admin/view_category.html",
+            {
+                "rooms": category.rooms.all(),
+                "category": category,
+            },
+        )
+    except Room.DoesNotExist:
+        return redirect("hsr_admin:category_list")
 
 
 def delete_reservation(request, pk):

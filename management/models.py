@@ -41,6 +41,8 @@ class Room(models.Model):
     addon = models.JSONField(blank=True, default=dict)
 
     def __str__(self):
+        if self.number:
+            return f"Room {self.number}"
         return f"Room {self.pk}"
 
 

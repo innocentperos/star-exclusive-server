@@ -1,0 +1,99 @@
+{% extends 'hsr_admin/base.html' %}
+ {% block title %} Room List {% endblock title %}
+
+
+ {% block body %}
+
+<form action="" method="get">
+  <div class="flex lg:px-16 flex-col px-4 space-y-4">
+    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
+      <div class="flex flex-col w-full">
+        <label class="pt-8 mb-2 block" for="">Start Date</label>
+        <input
+          class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+          type="date"
+          name="start_date"
+          value="{{form.start_date}}"
+        />
+      </div>
+
+      <div class="flex flex-col w-full">
+        <label class="pt-8 mb-2 block" for="">Start Time</label>
+        <input
+          class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+          type="time"
+          name="start_time"
+          value="{{form.start_time}}"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
+      <div class="flex flex-col w-full">
+        <label class="pt-8 mb-2 block" for="">End Date</label>
+        <input
+          class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+          type="date"
+          name="end_date"
+          value="{{form.end_date}}"
+        />
+      </div>
+
+      <div class="flex flex-col w-full">
+        <label class="pt-8 mb-2 block" for="">End Time</label>
+        <input
+          class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600"
+          type="time"
+          name="end_time",
+          value="{{form.end_time}}"
+        />
+      </div>
+    </div>
+
+    <div class="my-6 block">
+      <button
+        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+      >
+        Filter
+      </button>
+    </div>
+  </div>
+</form>
+
+<div class="flex flex-wrap px-4 lg:px-16 mt-16 space-x-8">
+  {% for category in categories %}
+  <div class="flex flex-row space-x-2 items-center shrink-0">
+    <div class="h-10 aspect-square {{colors|get:category.pk}}"></div>
+    <div class="flex flex-col">
+      <span>{{category.title }} </span>
+      <span>N {{category.price }} </span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<input type="room" hidden name="room" id="room" />
+<div
+  class="pt-16 px-4 lg:px-16 grid grid-cols-3 md:grid-cols-6 lg:grid-cols-10 gap-4"
+>
+  {% for room in rooms %}
+  <a
+  href="{% url 'hsr_admin:view_room' room.pk %}"
+    room-id="{{room.id}}"
+    room-category="{{room.category.id}}"
+    class="room_item w-full {{colors|get:room.category.pk}} rounded-md"
+  >
+    <div
+      class="relative overflow-hidden w-full aspect-square flex items-end justify-center py-4 px-1 rounded-md"
+    >
+      <img
+        src="{{room.category.cover.url}}"
+        class="absolute top-0 left-0 h-full w-full object-cover"
+        alt=""
+      />
+    </div>
+    <span class="block p-2">{{room}}</span>
+</a>
+  {% endfor %}
+</div>
+
+{% endblock body %}

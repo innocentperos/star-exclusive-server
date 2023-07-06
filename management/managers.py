@@ -44,3 +44,34 @@ class RoomManager:
                 categories_id.add(room.category.pk)
 
         return categories
+
+
+    @staticmethod
+    def taken_rooms(start_date: datetime, end_date: datetime
+    ):
+        reservations = Reservation.objects.filter(
+            Q(arrival_date=start_date)
+            | Q(departure_date=start_date)
+            | Q(departure_date=start_date)
+            | Q(departure_date=end_date)
+            | Q(arrival_date__gte=start_date) & Q(departure_date__lte=end_date)
+            | Q(arrival_date__lte=start_date) & Q(departure_date__gte=start_date)
+            | Q(arrival_date__lte=end_date) & Q(departure_date__gte=end_date)
+            | Q(arrival_date__lte=start_date) & Q(departure_date__gte=end_date)
+        )
+        # Get reservations that falls within the start and end date
+
+        # Get all the rooms under that category and remove each room of each reservation
+        # rooms: QuerySet = category.rooms
+
+        rooms = []
+        rooms_id = set()
+        
+        for reservation in reservations:
+            room = reservation.room
+            if room.pk not in rooms_id:
+                rooms.append(room)
+                rooms_id.add(room.pk)
+
+        # return the remaining rooms
+        return rooms

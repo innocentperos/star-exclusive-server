@@ -42,3 +42,19 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = RoomCategory
         fields = "__all__"
+
+class RoomFilterForm(forms.Form):
+    start_date = forms.DateField()
+    start_time = forms.TimeField()
+    end_date = forms.DateField()
+    end_time = forms.TimeField()
+    
+class RoomUpdateForm(forms.Form):
+    room_number = forms.CharField()
+    description = forms.CharField()
+    category = forms.ModelChoiceField(RoomCategory.objects.all())
+
+class CategoryUpdateForm(forms.Form):
+    title = forms.CharField()
+    description = forms.CharField()
+    price = forms.FloatField()
