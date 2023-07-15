@@ -32,6 +32,7 @@ class CustomerForm(forms.Form):
     phone_number = forms.CharField()
     identification_type = forms.CharField()
     identification_number = forms.CharField()
+    
 
 
 class BookingForm(forms.Form):

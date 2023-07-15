@@ -235,7 +235,8 @@ class ReservationViewSet(ViewSet):
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
                 data= {
-                    "detail":"Please fill in the customer form"
+                    "detail":"Please fill in the customer form",
+                    "error":customer_form.errors
                 }
             )
 
@@ -287,6 +288,7 @@ class ReservationViewSet(ViewSet):
             reservated_on=datetime.now(),
             paid=True,
             room=room,
+            guests = request.data["guests"]
         )
 
         with transaction.atomic():

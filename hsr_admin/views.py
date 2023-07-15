@@ -243,6 +243,7 @@ def view_category(request: HttpRequest, pk):
         elif request.method == "PUT":
 
             print(request.body)
+            
         return render(
             request,
             "hsr_admin/view_category.html",
