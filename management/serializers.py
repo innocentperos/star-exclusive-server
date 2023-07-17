@@ -55,6 +55,7 @@ class ReservationSerializer(serializers.ModelSerializer):
             "pk",
             "room",
             "customer",
+            "code",
             "reservation_type",
             "arrival_date",
             "departure_date",
@@ -79,6 +80,7 @@ class SecureReservationSerializer(serializers.ModelSerializer):
         fields = (
             "pk",
             "room",
+            "code",
             "customer",
             "reservation_type",
             "arrival_date",

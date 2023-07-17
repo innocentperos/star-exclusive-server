@@ -1,6 +1,8 @@
 from django.db import models
 from django.forms import ValidationError
 from django.utils.datetime_safe import datetime
+import string
+import random
 
 
 class RoomCategory(models.Model):
@@ -120,6 +122,13 @@ def validate_departure_date_greater_than_arrival_date(value):
         )
 
 
+def generate_reservation_code():
+
+    suffix = random.choices(string.digits,k=4)
+    prefix = random.choices(string.ascii_uppercase, k=3)
+
+    return f"{suffix}{prefix}"
+
 class Reservation(models.Model):
     RESERVATION = "reseravtion"
     BOOKING = "booking"
@@ -131,6 +140,8 @@ class Reservation(models.Model):
     customer = models.ForeignKey(
         Customer, on_delete=models.SET_NULL, null=True, related_name="reservations"
     )
+
+    code = models.CharField(unique=False, default = generate_reservation_code, max_length=50, blank=True,null = True)
 
     # Holds the customer information just incase the customer was deleted
     customer_raw = models.JSONField(null=True, blank=True, default=dict)
