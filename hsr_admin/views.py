@@ -32,6 +32,10 @@ def new_reservations():
 
 def context_parse(context):
     context["status__"] = new_reservations()
+    context["status__category"] = RoomCategory.objects.all().count()
+    context["status__room"] = Room.objects.all().count()
+
+
 
     return context
 
@@ -65,6 +69,9 @@ def index(request: HttpRequest):
             context={"message": "Wrong email address or password"},
         )
 
+    if request.user.is_authenticated:
+        return redirect("hsr_admin:home")
+    
     return render(request, template_name="hsr_admin/index.html")
 
 

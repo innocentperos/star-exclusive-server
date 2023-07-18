@@ -7,7 +7,25 @@
 
 
 {% block body %}
-<h1>Home Content</h1>
+<div class="grid grid-cols-3 gap-5 p-6">
+    <a href="{% url 'hsr_admin:reservation_list' %}" class="w-full p-8 text-2xl flex flex-col aspect-video rounded-md bg-indigo-600">
+        <span class="mt-auto text-4xl">{{status__}}</span>
+        <span>Reservations</span>
+
+    </a>
+
+    <a href="{% url 'hsr_admin:category_list' %}" class="w-full p-8 text-2xl flex flex-col aspect-video rounded-md bg-teal-600">
+        <span class="mt-auto text-4xl">{{status__category}}</span>
+        <span>Room Category</span>
+
+    </a>
+
+    <a href="{% url 'hsr_admin:room_list' %}" class="w-full p-8 text-2xl flex flex-col aspect-video rounded-md bg-blue-600">
+        <span class="mt-auto text-4xl">{{status__room }}</span>
+        <span>Rooms</span>
+
+    </a>
+</div>
 {% endblock body %}
     
     
