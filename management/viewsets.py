@@ -294,7 +294,7 @@ class ReservationViewSet(ViewSet):
             paid=True,
             room=room,
             guests=request.data["guests"],
-            requirement=request["requirement"],
+            requirement=request.data["requirement"],
         )
 
         with transaction.atomic():
