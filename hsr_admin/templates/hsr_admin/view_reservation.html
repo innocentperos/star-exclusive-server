@@ -5,7 +5,7 @@
 <div class=" overflow-x-hidden">
     <div class="p-6 ">
       <h2 class="text-2xl mb-4 text-white">Reservation Details</h2>
-      <p class="mb-2 text-white">Reservation ID: {{ reservation.id }}</p>
+      <p class="mb-2 text-white">Reservation ID: {{ reservation.code }}</p>
       <p class="mb-2 text-white">Arrival Date: {{ reservation.arrival_date }}</p>
       <p class="mb-2 text-white">Departure Date: {{ reservation.departure_date }}</p>
       
@@ -16,6 +16,10 @@
       <p class="mb-2 text-white">Last Name: {{ reservation.customer.last_name }}</p>
       <p class="mb-2 text-white">Email Address: {{ reservation.customer.email_address }}</p>
       <p class="mb-2 text-white">Phone Number: {{ reservation.customer.phone_number }}</p>
+      <p class="mb-2 text-white">Identification Type: {{ reservation.customer.id_type }}</p>
+
+      <p class="mb-2 text-white">Identification Number: {{ reservation.customer.id_number }}</p>
+
       
       <hr class="my-6 border-white">
       
