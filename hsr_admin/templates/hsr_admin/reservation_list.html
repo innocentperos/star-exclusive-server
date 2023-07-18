@@ -1,56 +1,66 @@
-{% extends 'hsr_admin/base.html' %} 
+{% extends 'hsr_admin/base.html' %}
 
 {% block body %}
 
 <div class="p-4">
-    <a href="{% url 'hsr_admin:check_availability'%}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">New Reservation</a>
+  <a href="{% url 'hsr_admin:check_availability'%}"
+    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">New Reservation</a>
 
-    <table class="min-w-full">
-      <thead class="">
-        <tr class="py-8">
-          <th class="py-4 px-4  text-left">ID</th>
-          <th class="py-4 px-4  text-left">Arrival Date</th>
-          <th class="py-4 px-4  text-left">Departure Date</th>
-          <th class="py-4 px-4  text-left">Customer</th>
-          <th class="py-4 px-4  text-left">Room</th>
-          <th class="py-4 px-4  text-left">Paid</th>
+  <table class="min-w-full">
+    <thead class="">
+      <tr class="py-8">
+        <th class="py-4 px-4  text-left">ID</th>
+        <th class="py-4 px-4  text-left">Arrival Date</th>
+        <th class="py-4 px-4  text-left">Departure Date</th>
+        <th class="py-4 px-4  text-left">Customer</th>
+        <th class="py-4 px-4  text-left">Room</th>
+        <th class="py-4 px-4  text-left">Paid</th>
 
 
-          <th class="py-4 px-4  text-left">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for reservation in reservations %}
-        <tr>
-          <td class="py-2 px-4  text-left">{{ reservation.id }}</td>
-          <td class="py-2 px-4  text-left">{{ reservation.arrival_date }}</td>
-          <td class="py-2 px-4  text-left">{{ reservation.departure_date }}</td>
-          <td class="py-2 px-4  text-left">{{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</td>
-          <td class="py-2 px-4  text-left">{{ reservation.room }} ({{reservation.room.category}})</td>
-          <td class="py-2 px-4  text-left">
+        <th class="py-4 px-4  text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for reservation in reservations %}
+      <tr>
+        <td class="py-6 px-4 flex items-center space-x-2 text-left">
+          
+          
+          <span>{{ reservation.code }}</span>
+          {% if not reservation.viewed %}
+          <div class="p-2 px-4 bg-indigo-400 rounded-sm">new </div>
+          {% endif %}
             
-            {% if reservation.paid %}
-                <span class="text-green-600">paid</span>
-                {% else %}
-                <span>not paid</span>
-            {% endif %}
-                
-          </td>
+        </td>
+        <td class="py-6 px-4  text-left">{{ reservation.arrival_date.date }}</td>
+        <td class="py-6 px-4  text-left">{{ reservation.departure_date.date }}</td>
+        <td class="py-6 px-4  text-left">{{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</td>
+        <td class="py-6 px-4  text-left">{{ reservation.room.number }} ({{reservation.room.category}})</td>
+        <td class="py-6 px-4  text-left">
 
-          <td class="py-2 px-4  text-left">
-            <a href="{% url 'hsr_admin:view_reservation' reservation.id %}" class="text-blue-500 hover:text-blue-700 mr-2">View</a>
-            <a href="" class="text-yellow-500 hover:text-yellow-700 mr-2">Edit</a>
-            <a href="{% url 'hsr_admin:delete_reservation' reservation.id %}" class="text-red-500 hover:text-red-700">Delete</a>
-          </td>
-        </tr>
+          {% if reservation.paid %}
+          <span class="text-green-600">paid (N{{reservation.room.category.price}})</span>
+          {% else %}
+          <span>not paid</span>
+          {% endif %}
 
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+        </td>
 
-  <script>
+        <td class="py-2 px-4 flex space-x-2 text-left">
+          <a href="{% url 'hsr_admin:view_reservation' reservation.id %}"
+            class="block p-4 py-2 rounded-md bg-blue-500 hover:bg-blue-700 ">View</a>
+          <a href="{% url 'hsr_admin:delete_reservation' reservation.id %}"
+            class="block p-4 py-2 rounded-md bg-red-500 hover:bg-red-700">Delete</a>
+        </td>
+      </tr>
 
-  </script>
-  
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+
+</script>
+
 {% endblock body %}

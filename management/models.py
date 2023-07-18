@@ -124,8 +124,8 @@ def validate_departure_date_greater_than_arrival_date(value):
 
 def generate_reservation_code():
 
-    suffix = random.choices(string.digits,k=4)
-    prefix = random.choices(string.ascii_uppercase, k=3)
+    prefix = "".join(random.choices(string.digits,k=4))
+    suffix = "".join(random.choices(string.ascii_uppercase, k=3))
 
     return f"{suffix}{prefix}"
 
@@ -133,9 +133,13 @@ class Reservation(models.Model):
     RESERVATION = "reseravtion"
     BOOKING = "booking"
 
+    viewed = models.BooleanField(default=False)
+
     room = models.ForeignKey(
         Room, related_name="reservations", on_delete=models.CASCADE
     )
+
+    requirement = models.TextField(default="", blank=True)
 
     customer = models.ForeignKey(
         Customer, on_delete=models.SET_NULL, null=True, related_name="reservations"

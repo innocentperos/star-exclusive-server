@@ -57,3 +57,17 @@ content-length: 522
 x-content-type-options: nosniff
 referrer-policy: same-origin
 cross-origin-opener-policy: same-origin
+###
+GET http://localhost:8000/api/reservations/25/
+
+HTTP/1.1 404  - Not Found
+date: Mon, 17 Jul 2023 21:46:04 GMT
+server: WSGIServer/0.2 CPython/3.11.3
+content-type: application/json
+vary: Accept, Origin, Cookie
+allow: GET, HEAD, OPTIONS
+x-frame-options: DENY
+content-length: 60
+x-content-type-options: nosniff
+referrer-policy: same-origin
+cross-origin-opener-policy: same-origin

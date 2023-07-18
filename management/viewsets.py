@@ -169,7 +169,16 @@ class ReservationViewSet(ViewSet):
 
     def retrieve(self, request: Request, pk=None):
         try:
-            reservation = Reservation.objects.get(pk=pk)
+            try:
+                id = int(pk)
+                if request.user.is_anonymous:
+                    return Response(
+                                {"detail": "Only authenticated users can use reservation id"},
+                                status=status.HTTP_404_NOT_FOUND,
+                            )
+                reservation = Reservation.objects.get(pk=id )
+            except ValueError:
+                reservation = Reservation.objects.get(code=pk )
 
             return Response(
                 SecureReservationSerializer(
@@ -288,7 +297,8 @@ class ReservationViewSet(ViewSet):
             reservated_on=datetime.now(),
             paid=True,
             room=room,
-            guests = request.data["guests"]
+            guests = request.data["guests"],
+            requirement = request["requirement"]
         )
 
         with transaction.atomic():

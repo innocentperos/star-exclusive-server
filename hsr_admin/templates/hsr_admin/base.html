@@ -45,7 +45,10 @@
                 <a href="{% url 'hsr_admin:room_list' %}" class="block p-4 hover:bg-gray-900">Rooms</a>
               </li>
               <li>
-                <a href="{% url 'hsr_admin:reservation_list' %}" class="block p-4 hover:bg-gray-900">Reservation</a>
+                <a href="{% url 'hsr_admin:reservation_list' %}" class="flex space-x-4 items-center p-4 hover:bg-gray-900">
+                  <span>Reservation</span>
+                  <div class="py-2 px-8 bg-indigo-500 text-white rounded-lg"> {{status__}} new</div>
+                </a>
               </li>
               <li>
                 <a href="#" class="block p-4 hover:bg-gray-900">Customers</a>
