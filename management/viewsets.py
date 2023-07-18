@@ -14,7 +14,7 @@ from django.utils.datetime_safe import datetime
 
 from hsr_admin.forms import BookingForm, CheckAvailabilityForm, CustomerForm
 
-from .forms import NewCustomerForm, NewReservationForm
+from .forms import CancelRequestForm, NewCustomerForm, NewReservationForm
 
 
 from .serializers import (
@@ -24,7 +24,7 @@ from .serializers import (
     SecureReservationSerializer,
 )
 
-from .models import Customer, Reservation, Room, RoomCategory
+from .models import Customer, Reservation, Room, RoomCategory, generate_cancel_code
 from .managers import RoomManager
 
 
@@ -173,12 +173,12 @@ class ReservationViewSet(ViewSet):
                 id = int(pk)
                 if request.user.is_anonymous:
                     return Response(
-                                {"detail": "Only authenticated users can use reservation id"},
-                                status=status.HTTP_404_NOT_FOUND,
-                            )
-                reservation = Reservation.objects.get(pk=id )
+                        {"detail": "Only authenticated users can use reservation id"},
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
+                reservation = Reservation.objects.get(pk=id)
             except ValueError:
-                reservation = Reservation.objects.get(code=pk )
+                reservation = Reservation.objects.get(code=pk)
 
             return Response(
                 SecureReservationSerializer(
@@ -200,10 +200,10 @@ class ReservationViewSet(ViewSet):
         if not form.is_valid():
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
-                data= {
-                    "detail":"Provide all field in the check availability form",
-                    "errors": form.errors
-                }
+                data={
+                    "detail": "Provide all field in the check availability form",
+                    "errors": form.errors,
+                },
             )
 
         # Check the reservation Form
@@ -215,47 +215,39 @@ class ReservationViewSet(ViewSet):
         if not arrival or not departure:
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
-                data= {
-                    "detail":"Please provide the reservation arrival and departure date and date"
-                }
+                data={
+                    "detail": "Please provide the reservation arrival and departure date and date"
+                },
             )
         now = datetime.now()
 
         if arrival <= now:
-
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
-                data= {
-                    "detail":"Please arrival date most be be ahead of current date"
-                }
+                data={"detail": "Please arrival date most be be ahead of current date"},
             )
-        
+
         if departure <= arrival:
-
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
-                data= {
-                    "detail":"Please departure date most be be ahead of arrival date"
-                }
+                data={
+                    "detail": "Please departure date most be be ahead of arrival date"
+                },
             )
-        
+
         if not customer_form.is_valid():
-            
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
-                data= {
-                    "detail":"Please fill in the customer form",
-                    "error":customer_form.errors
-                }
+                data={
+                    "detail": "Please fill in the customer form",
+                    "error": customer_form.errors,
+                },
             )
 
         if not booking_form.is_valid():
-            
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
-                data= {
-                    "detail":"Please select a room category"
-                }
+                data={"detail": "Please select a room category"},
             )
 
         customer_data = customer_form.cleaned_data
@@ -278,16 +270,20 @@ class ReservationViewSet(ViewSet):
             if rooms.count() < 1:
                 return Response(
                     status=status.HTTP_406_NOT_ACCEPTABLE,
-                    data= {"detail":"Please select a different room, selected room is not available"}
+                    data={
+                        "detail": "Please select a different room, selected room is not available"
+                    },
                 )
-            
+
             room = rooms.first()
-            
+
         except RoomCategory.DoesNotExist:
             return Response(
-                    status=status.HTTP_406_NOT_ACCEPTABLE,
-                    data= {"detail":"Please select a different room, selected room is not available"}
-                )
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data={
+                    "detail": "Please select a different room, selected room is not available"
+                },
+            )
 
         reservation = Reservation(
             customer=customer,
@@ -297,17 +293,61 @@ class ReservationViewSet(ViewSet):
             reservated_on=datetime.now(),
             paid=True,
             room=room,
-            guests = request.data["guests"],
-            requirement = request["requirement"]
+            guests=request.data["guests"],
+            requirement=request["requirement"],
         )
 
         with transaction.atomic():
             customer.save()
             reservation.save()
 
+            return Response(SecureReservationSerializer(reservation).data)
+
+    @action(("POST",), detail=True)
+    def cancel_request(self, request: Request, pk=None):
+        form = CancelRequestForm(request.data)
+
+        if not form.is_valid():
             return Response(
-                SecureReservationSerializer(
-                reservation
-                ).data
+                {
+                    "detail": "Please provide email adrress and identification number",
+                    "error": form.errors,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
+        try:
+            reservation = Reservation.objects.get(code=pk)
+            data = form.cleaned_data 
+            if reservation.customer.email_address != data["email_address"]:
+                return Response({
+                    "detail":"Email address does not match"
+                }, status=status.HTTP_406_NOT_ACCEPTABLE)
+            
+            data = form.cleaned_data 
+            if reservation.customer.id_number != data["identification_number"]:
+                return Response({
+                    "detail":"Identification number does not match"
+                }, status=status.HTTP_406_NOT_ACCEPTABLE)
+            
+            code = generate_cancel_code()
+
+            reservation.cancel_code = code 
+            reservation.save()
+
+            return Response(
+                {
+                    "detail": "Cancel Request has been initiated",
+                    "code": code
+                }
+            )
+        
+        except Reservation.DoesNotExist:
+            return Response(
+                {
+                    "detail": "No Reservation was found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+    

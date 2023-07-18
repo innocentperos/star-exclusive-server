@@ -29,3 +29,7 @@ class NewReservationForm(forms.ModelForm):
             "guests",
             "customization_request",
         )
+
+class CancelRequestForm(forms.Form):
+    email_address = forms.CharField()
+    identification_number = forms.CharField()

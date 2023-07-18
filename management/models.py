@@ -129,11 +129,21 @@ def generate_reservation_code():
 
     return f"{suffix}{prefix}"
 
+def generate_cancel_code():
+
+    prefix = "".join(random.choices(string.digits,k=6))
+    suffix = "".join(random.choices(string.ascii_uppercase, k=12))
+    key = "".join(random.choices(string.ascii_letters + string.digits,k=8))
+
+    return f"{suffix}{prefix}{key}"
+
+
 class Reservation(models.Model):
     RESERVATION = "reseravtion"
     BOOKING = "booking"
 
     viewed = models.BooleanField(default=False)
+    cancel_code = models.CharField(max_length=200, blank=True)
 
     room = models.ForeignKey(
         Room, related_name="reservations", on_delete=models.CASCADE
