@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q, F
 from django.db import transaction
@@ -26,18 +26,17 @@ from .forms import (
 # Create your views here.
 
 
-
 def new_reservations():
-    return Reservation.objects.filter(viewed = False).count()
+    return Reservation.objects.filter(viewed=False).count()
+
 
 def context_parse(context):
     context["status__"] = new_reservations()
     context["status__category"] = RoomCategory.objects.all().count()
     context["status__room"] = Room.objects.all().count()
 
-
-
     return context
+
 
 def index(request: HttpRequest):
     if request.method.upper() == "POST":
@@ -71,19 +70,26 @@ def index(request: HttpRequest):
 
     if request.user.is_authenticated:
         return redirect("hsr_admin:home")
-    
+
     return render(request, template_name="hsr_admin/index.html")
+
+
+def user_logout(request: HttpRequest):
+    if request.user.is_authenticated:
+        logout(request)
+
+    return redirect("hsr_admin:index")
 
 
 def home(request: HttpRequest):
     if not request.user.is_authenticated:
         return redirect(index)
-    return render(request, template_name="hsr_admin/dashboard.html", context= context_parse({}))
+    return render(
+        request, template_name="hsr_admin/dashboard.html", context=context_parse({})
+    )
 
 
 def category_list(request: HttpRequest):
-
-
     if not request.user.is_authenticated:
         return redirect(index)
 
@@ -96,16 +102,11 @@ def category_list(request: HttpRequest):
 
 
 def new_category(request: HttpRequest):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
+
     if request.method == "GET":
-        return render(
-            request,
-            "hsr_admin/new_category.html",
-            context=context_parse({})
-        )
+        return render(request, "hsr_admin/new_category.html", context=context_parse({}))
 
     form = CategoryForm(request.POST, request.FILES)
 
@@ -113,7 +114,9 @@ def new_category(request: HttpRequest):
         return render(
             request,
             "hsr_admin/new_category.html",
-            context=context_parse({"message": "Please provide all the fields", "form": request.POST}),
+            context=context_parse(
+                {"message": "Please provide all the fields", "form": request.POST}
+            ),
         )
     category = form.save()
 
@@ -132,21 +135,25 @@ def new_category(request: HttpRequest):
 
 
 def reservation_list(request: HttpRequest):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
-    reservations = Reservation.objects.all().order_by("-id")
+
+    reservations = Reservation.objects.filter(viewed=True).order_by("-id")
+    new_reservations = Reservation.objects.filter(viewed=False).order_by("-id")
+
     return render(
-        request, "hsr_admin/reservation_list.html", context_parse({"reservations": reservations})
+        request,
+        "hsr_admin/reservation_list.html",
+        context_parse(
+            {"reservations": reservations, "new_reservations": new_reservations}
+        ),
     )
 
 
 def room_list(request: HttpRequest):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
+
     form = RoomFilterForm(request.GET)
 
     if form.is_valid():
@@ -178,20 +185,21 @@ def room_list(request: HttpRequest):
     return render(
         request,
         "hsr_admin/rooms.html",
-        context_parse({
-            "categories": categories,
-            "rooms": rooms,
-            "colors": _colors,
-            "form": request.GET,
-        }),
+        context_parse(
+            {
+                "categories": categories,
+                "rooms": rooms,
+                "colors": _colors,
+                "form": request.GET,
+            }
+        ),
     )
 
 
 def view_room(request: HttpRequest, pk):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
+
     try:
         room = Room.objects.get(pk=pk)
         categories = RoomCategory.objects.all()
@@ -202,12 +210,14 @@ def view_room(request: HttpRequest, pk):
                 return render(
                     request,
                     "hsr_admin/view_room.html",
-                    context_parse({
-                        "room": room,
-                        "reservations": room.reservations.all(),
-                        "categories": categories,
-                        "error": "Please provide all field",
-                    }),
+                    context_parse(
+                        {
+                            "room": room,
+                            "reservations": room.reservations.all(),
+                            "categories": categories,
+                            "error": "Please provide all field",
+                        }
+                    ),
                 )
 
             data = form.data
@@ -221,32 +231,35 @@ def view_room(request: HttpRequest, pk):
             return render(
                 request,
                 "hsr_admin/view_room.html",
-                context_parse({
-                    "room": room,
-                    "reservations": room.reservations.all(),
-                    "categories": categories,
-                    "success": "Room detail Updated",
-                }),
+                context_parse(
+                    {
+                        "room": room,
+                        "reservations": room.reservations.all(),
+                        "categories": categories,
+                        "success": "Room detail Updated",
+                    }
+                ),
             )
 
         return render(
             request,
             "hsr_admin/view_room.html",
-            context_parse({
-                "room": room,
-                "reservations": room.reservations.all(),
-                "categories": categories,
-            }),
+            context_parse(
+                {
+                    "room": room,
+                    "reservations": room.reservations.all(),
+                    "categories": categories,
+                }
+            ),
         )
     except Room.DoesNotExist:
         return redirect("hsr_admin:room_list")
 
 
 def view_category(request: HttpRequest, pk):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
+
     try:
         category = RoomCategory.objects.get(pk=pk)
 
@@ -256,11 +269,13 @@ def view_category(request: HttpRequest, pk):
                 return render(
                     request,
                     "hsr_admin/view_category.html",
-                    context_parse({
-                        "rooms": category.rooms.all(),
-                        "category": category,
-                        "error": "Please provide all field",
-                    }),
+                    context_parse(
+                        {
+                            "rooms": category.rooms.all(),
+                            "category": category,
+                            "error": "Please provide all field",
+                        }
+                    ),
                 )
 
             data = form.cleaned_data
@@ -273,78 +288,87 @@ def view_category(request: HttpRequest, pk):
             return render(
                 request,
                 "hsr_admin/view_category.html",
-                context_parse({
-                    "rooms": category.rooms.all(),
-                    "category": category,
-                    "success": "CAtegory detail Updated",
-                }),
+                context_parse(
+                    {
+                        "rooms": category.rooms.all(),
+                        "category": category,
+                        "success": "CAtegory detail Updated",
+                    }
+                ),
             )
         elif request.method == "PUT":
-
             print(request.body)
-            
+
         return render(
             request,
             "hsr_admin/view_category.html",
-            context_parse({
-                "rooms": category.rooms.all(),
-                "category": category,
-            }),
+            context_parse(
+                {
+                    "rooms": category.rooms.all(),
+                    "category": category,
+                }
+            ),
         )
     except Room.DoesNotExist:
         return redirect("hsr_admin:category_list")
 
 
 def delete_reservation(request, pk):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
+
     reservation = Reservation.objects.get(pk=pk)
 
     reservation.viewed = True
     reservation.save()
-
 
     if request.method == "POST":
         reservation.delete()
         return redirect("hsr_admin:reservation_list")
 
     return render(
-        request, "hsr_admin/delete_reservation.html",context_parse( {"reservation": reservation})
+        request,
+        "hsr_admin/delete_reservation.html",
+        context_parse({"reservation": reservation}),
     )
 
 
 def view_reservation(request, pk):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
-    reservation = get_object_or_404(Reservation, pk=pk)
 
-    reservation.viewed = True
-    reservation.save()
+    try:
+        reservation = Reservation.objects.get(pk=pk)
 
-    return render(
-        request, "hsr_admin/view_reservation.html",context_parse( {"reservation": reservation})
-    )
+        reservation.viewed = True
+        reservation.save()
+
+        return render(
+            request,
+            "hsr_admin/view_reservation.html",
+            context_parse({"reservation": reservation}),
+        )
+
+    except Reservation.DoesNotExist:
+        return redirect("hsr_admin:reservation_list")
 
 
 def check_availability(request: HttpRequest):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
+
     form = CheckAvailabilityForm(request.POST)
 
     if not form.is_valid():
         return render(
             request,
             "hsr_admin/new_reservation.html",
-            context=context_parse({
-                "message": "Please provide the reservation arrival and departure date and date",
-                "form": request.POST,
-            }),
+            context=context_parse(
+                {
+                    "message": "Please provide the reservation arrival and departure date and date",
+                    "form": request.POST,
+                }
+            ),
         )
     data = form.cleaned_data
 
@@ -355,20 +379,24 @@ def check_availability(request: HttpRequest):
         return render(
             request,
             "hsr_admin/new_reservation.html",
-            context=context_parse({
-                "message": "Please provide the reservation arrival and departure date and date",
-                "form": request.POST,
-            }),
+            context=context_parse(
+                {
+                    "message": "Please provide the reservation arrival and departure date and date",
+                    "form": request.POST,
+                }
+            ),
         )
 
     if departure <= arrival:
         return render(
             request,
             "hsr_admin/new_reservation.html",
-            context=context_parse({
-                "message": "Please departure date most be be ahead of arrival date",
-                "form": request.POST,
-            }),
+            context=context_parse(
+                {
+                    "message": "Please departure date most be be ahead of arrival date",
+                    "form": request.POST,
+                }
+            ),
         )
 
     rooms = RoomManager.available_rooms(None, arrival, departure)
@@ -390,21 +418,22 @@ def check_availability(request: HttpRequest):
     return render(
         request,
         "hsr_admin/new_reservation.html",
-        context=context_parse({
-            "adding": True,
-            "form": request.POST,
-            "categories": categories,
-            "rooms": rooms,
-            "colors": _colors,
-        }),
+        context=context_parse(
+            {
+                "adding": True,
+                "form": request.POST,
+                "categories": categories,
+                "rooms": rooms,
+                "colors": _colors,
+            }
+        ),
     )
 
 
 def new_reservation(request: HttpRequest):
-
     if not request.user.is_authenticated:
         return redirect(index)
-    
+
     if request.method == "POST":
         form = CheckAvailabilityForm(request.POST)
         customer_form = CustomerForm(request.POST)
@@ -414,10 +443,12 @@ def new_reservation(request: HttpRequest):
             return render(
                 request,
                 "hsr_admin/new_reservation.html",
-                context=context_parse({
-                    "message": "1 Please provide the reservation arrival and departure date and date",
-                    "form": request.POST,
-                }),
+                context=context_parse(
+                    {
+                        "message": "1 Please provide the reservation arrival and departure date and date",
+                        "form": request.POST,
+                    }
+                ),
             )
 
         # Check the reservation Form
@@ -430,10 +461,12 @@ def new_reservation(request: HttpRequest):
             return render(
                 request,
                 "hsr_admin/new_reservation.html",
-                context=context_parse({
-                    "message": "2 Please provide the reservation arrival and departure date and date",
-                    "form": request.POST,
-                }),
+                context=context_parse(
+                    {
+                        "message": "2 Please provide the reservation arrival and departure date and date",
+                        "form": request.POST,
+                    }
+                ),
             )
 
         if departure <= arrival:
@@ -441,10 +474,10 @@ def new_reservation(request: HttpRequest):
                 request,
                 "hsr_admin/new_reservation.html",
                 context=context_parse(
-                {
-                    "message": "3 Please departure date most be be ahead of arrival date",
-                    "form": request.POST,
-                }
+                    {
+                        "message": "3 Please departure date most be be ahead of arrival date",
+                        "form": request.POST,
+                    }
                 ),
             )
 
@@ -468,13 +501,15 @@ def new_reservation(request: HttpRequest):
             return render(
                 request,
                 "hsr_admin/new_reservation.html",
-                context=context_parse({
-                    "adding": True,
-                    "form": request.POST,
-                    "categories": categories,
-                    "rooms": rooms,
-                    "colors": _colors,
-                }),
+                context=context_parse(
+                    {
+                        "adding": True,
+                        "form": request.POST,
+                        "categories": categories,
+                        "rooms": rooms,
+                        "colors": _colors,
+                    }
+                ),
             )
 
         if not booking_form.is_valid():
@@ -497,13 +532,15 @@ def new_reservation(request: HttpRequest):
             return render(
                 request,
                 "hsr_admin/new_reservation.html",
-                context=context_parse({
-                    "adding": True,
-                    "form": request.POST,
-                    "categories": categories,
-                    "rooms": rooms,
-                    "colors": _colors,
-                }),
+                context=context_parse(
+                    {
+                        "adding": True,
+                        "form": request.POST,
+                        "categories": categories,
+                        "rooms": rooms,
+                        "colors": _colors,
+                    }
+                ),
             )
 
         customer_data = customer_form.cleaned_data
@@ -525,13 +562,15 @@ def new_reservation(request: HttpRequest):
             return render(
                 request,
                 "hsr_admin/new_reservation.html",
-                context=context_parse({
-                    "adding": True,
-                    "form": request.POST,
-                    "categories": categories,
-                    "rooms": rooms,
-                    "colors": _colors,
-                }),
+                context=context_parse(
+                    {
+                        "adding": True,
+                        "form": request.POST,
+                        "categories": categories,
+                        "rooms": rooms,
+                        "colors": _colors,
+                    }
+                ),
             )
 
         reservation = Reservation(
@@ -553,4 +592,6 @@ def new_reservation(request: HttpRequest):
     else:
         form = ReservationForm()
 
-    return render(request, "hsr_admin/new_reservation.html",context_parse( {"form": form}))
+    return render(
+        request, "hsr_admin/new_reservation.html", context_parse({"form": form})
+    )

@@ -1,11 +1,35 @@
 {% extends 'hsr_admin/base.html' %}
 
+
+
+{% block actions %}
+<div class="flex space-x-2 px-4">
+  <input type="text" placeholder="Reservation Code"
+    class="w-64 py-2 px-4 border text-slate-900 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+  <a href="{%url 'hsr_admin:new_category'%}"
+    class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded">
+    Search
+  </a>
+</div>
+{% endblock actions %}
+
+
+{% block title  %}
+  Reservation List
+{% endblock title  %}
+  
+
+
 {% block body %}
 
 <div class="p-4">
+<div class="flex space-x-4 mb-8">
+  
+  <h1 class="text-3xl p-4">Reservation List</h1>
   <a href="{% url 'hsr_admin:check_availability'%}"
-    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">New Reservation</a>
+    class="px-4 py-2 inline-block my-auto bg-blue-500 text-white rounded hover:bg-blue-700">New Reservation</a>
 
+</div>
   <table class="min-w-full">
     <thead class="">
       <tr class="py-8">
@@ -21,36 +45,81 @@
       </tr>
     </thead>
     <tbody>
-      {% for reservation in reservations %}
+
+      {% for reservation in new_reservations %}
       <tr>
         <td class="py-6 px-4 flex items-center space-x-2 text-left">
-          
-          
+
+
           <span>{{ reservation.code }}</span>
           {% if not reservation.viewed %}
           <div class="p-2 px-4 bg-indigo-400 rounded-sm">new </div>
           {% endif %}
-            
+
         </td>
         <td class="py-6 px-4  text-left">{{ reservation.arrival_date.date }}</td>
         <td class="py-6 px-4  text-left">{{ reservation.departure_date.date }}</td>
         <td class="py-6 px-4  text-left">{{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</td>
         <td class="py-6 px-4  text-left">{{ reservation.room.number }} ({{reservation.room.category}})</td>
-        <td class="py-6 px-4  text-left">
+        <td class="py-6 px-4  text-left ">
 
-          {% if reservation.paid %}
-          <span class="text-green-600">paid (N{{reservation.room.category.price}})</span>
+          <div class="flex space-x-2">
+            {% if reservation.paid %}
+          <div class="h-6 aspect-square bg-teal-500 rounded-full">
+          </div>
           {% else %}
-          <span>not paid</span>
+          <div class="h-6 aspect-square bg-slate-500">
+          </div>
           {% endif %}
-
+          <span>{{reservation.room.category.price}}</span>
+          </div>
         </td>
 
         <td class="py-2 px-4 flex space-x-2 text-left">
           <a href="{% url 'hsr_admin:view_reservation' reservation.id %}"
             class="block p-4 py-2 rounded-md bg-blue-500 hover:bg-blue-700 ">View</a>
           <a href="{% url 'hsr_admin:delete_reservation' reservation.id %}"
-            class="block p-4 py-2 rounded-md bg-red-500 hover:bg-red-700">Delete</a>
+            class="block p-4 py-2 rounded-md bg-orange-500 hover:bg-orange-700">Cancel</a>
+        </td>
+      </tr>
+
+      {% endfor %}
+
+      {% for reservation in reservations %}
+      <tr>
+        <td class="py-6 px-4 flex items-center space-x-2 text-left">
+
+
+          <span>{{ reservation.code }}</span>
+          {% if not reservation.viewed %}
+          <div class="p-2 px-4 bg-indigo-400 rounded-sm">new </div>
+          {% endif %}
+
+        </td>
+        <td class="py-6 px-4  text-left">{{ reservation.arrival_date.date }}</td>
+        <td class="py-6 px-4  text-left">{{ reservation.departure_date.date }}</td>
+        <td class="py-6 px-4  text-left">{{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</td>
+        <td class="py-6 px-4  text-left">{{ reservation.room.number }} ({{reservation.room.category}})</td>
+
+        <td class="py-6 px-4  text-left ">
+
+          <div class="flex space-x-2">
+            {% if reservation.paid %}
+          <div class="h-6 aspect-square bg-teal-500 rounded-full">
+          </div>
+          {% else %}
+          <div class="h-6 aspect-square bg-slate-500">
+          </div>
+          {% endif %}
+          <span>{{reservation.room.category.price}}</span>
+          </div>
+        </td>
+
+        <td class="py-2 px-4 flex space-x-2 text-left">
+          <a href="{% url 'hsr_admin:view_reservation' reservation.id %}"
+            class="block p-4 py-2 rounded-md bg-blue-500 hover:bg-blue-700 ">View</a>
+          <!-- <a href="{% url 'hsr_admin:delete_reservation' reservation.id %}"
+            class="block p-4 py-2 rounded-md bg-red-500 hover:bg-red-700">Delete</a> -->
         </td>
       </tr>
 

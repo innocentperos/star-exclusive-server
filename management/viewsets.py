@@ -291,7 +291,7 @@ class ReservationViewSet(ViewSet):
             arrival_date=arrival,
             departure_date=departure,
             reservated_on=datetime.now(),
-            paid=True,
+            paid=False,
             room=room,
             guests=request.data["guests"],
             requirement=request.data["requirement"],

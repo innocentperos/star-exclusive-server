@@ -24,14 +24,18 @@
         <tr class="hover:bg-slate-900 hover:text-white">
             <td class="py-2 px-4"></td>
             <td class="py-2 px-4">
-              <a href="{% url 'hsr_admin:view_category' category.pk %}" class="text-blue-500 hover:underline">{{category.title}}</a>
+              <a href="{% url 'hsr_admin:view_category' category.pk %}" class=" hover:underline">{{category.title}}</a>
             </td>
             <td class="py-2 px-4">{{category.price}}</td>
-            <td class="py-2 px-4">
-              <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+            <td class="py-2 px-4 flex space-x-2">
+
+              <a href="{% url 'hsr_admin:view_category' category.pk %}" class="block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                View
+              </a>
+              <button class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded">
                 Edit
               </button>
-              <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded ml-2">
+              <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded ">
                 Delete
               </button>
             </td>

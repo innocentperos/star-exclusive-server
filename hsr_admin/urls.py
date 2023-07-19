@@ -4,6 +4,8 @@ from . import views
 app_name = "hsr_admin"
 urlpatterns = [
     path("", views.index, name="index"),
+    path("logout/", views.user_logout, name="logout"),
+
     path("home/", views.home, name="home"),
     path("categories/", views.category_list, name="category_list"),
     path("categories/new/", views.new_category, name="new_category"),

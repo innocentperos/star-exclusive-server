@@ -9,27 +9,29 @@
     
     <body class= "overflow-x-hidden bg-gray-800 text-white w-screen h-screen grid grid-cols-[64px,1fr] lg:grid-cols-[16rem,1fr] grid-rows-[64px,1fr]" >
         
-        <div class="col-start-1 col-end-3 shadow-md shadow-slate-400/5">
-            <div class="h-full w-full items-center flex bg-gray-800 text-white p-4">
+        <div class=" col-start-1 col-end-3 shadow-md shadow-slate-400/5">
+            <div class="h-full w-full items-center space-x-4 px-4 flex bg-gray-800 text-white p-4">
                 <div class="flex-shrink-0">
                   <!-- Logo or application icon -->
-                  <img src="logo.png" alt="Logo" class="h-8 w-8">
+                  <!-- <img src="logo.png" alt="Logo" class="h-8 w-8"> -->
+                  <div class="h-8 w-9 flex items-center justify-center font-extrabold text-slate-400">
+                    Star
+                  </div>
                 </div>
-                <span class="mx-6 text-xl">Star Exclusive</span>
-                <div class="ml-auto mx-6">
-                  <!-- Navigation links -->
-                  <ul class="flex space-x-4">
-                    <li>
-                      <a href="#" class="hover:text-gray-300">Home</a>
-                    </li>
+                <span class="text-xl !mr-auto">Star Exclusive</span>
+
+                {% block actions %}
                     
-                  </ul>
+                  {% endblock actions %}
+                <div class="mx-6">
+                  <!-- Navigation links -->
+                  
                 </div>
                 <div class="flex-shrink-0">
                   
-                  <button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-2">
+                  <a href="{% url 'hsr_admin:logout' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-2">
                     Logout
-                  </button>
+                  </a>
                 </div>
               </div>
               
@@ -55,9 +57,9 @@
               </li>
             </ul>
             <div class="mt-auto p-4">
-              <button class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">
-                Logout
-              </button>
+              <a href="{% url 'hsr_admin:logout' %}" class="flex items-center justify-center text-center w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">
+                <span>Logout</span>
+              </a>
             </div>
           </div>
           

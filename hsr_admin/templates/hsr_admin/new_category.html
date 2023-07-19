@@ -9,7 +9,7 @@ New Category
   <h1 class="text-xl font-bold">New Room Category</h1>
   <span class="text-red-500 ">{{message}}</span>
 </div>
-<form action="" method="post" enctype>
+<form action="" method="post" enctype="multipart/form-data">
   
   {% csrf_token %}
   <div class="flex lg:px-16 flex-col px-4 space-y-4">
@@ -35,7 +35,7 @@ New Category
     <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
       <div class="flex flex-col w-full">
         <label class="pt-8 mb-2 block" for="">Cover Image</label>
-        <input class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600" type="file" name="cover" value="{{form.departure_date}}" />
+        <input class="bg-transparent border-white w-full shadow-md px-8 py-4 outline-none border-2 border-black/40 rounded-md hover:border-indigo-600" type="file" name="cover"  />
       </div>
 
       <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 my-4">
