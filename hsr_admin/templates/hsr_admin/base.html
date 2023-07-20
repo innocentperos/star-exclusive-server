@@ -25,7 +25,10 @@
                   {% endblock actions %}
                 <div class="mx-6">
                   <!-- Navigation links -->
-                  
+                  <a href="{% url 'hsr_admin:home' %}
+" class="bg-gray-500 hover:bg-indigo-600 text-white font-
+bold py-2 px-4 rounded ml-2">                                              HOME
+                  </a>
                 </div>
                 <div class="flex-shrink-0">
                   
@@ -52,7 +55,7 @@
                   <div class="py-2 px-8 bg-indigo-500 text-white rounded-lg"> {{status__}} new</div>
                 </a>
               </li>
-              <li>
+              <li class="hidden">
                 <a href="#" class="block p-4 hover:bg-gray-900">Customers</a>
               </li>
             </ul>
