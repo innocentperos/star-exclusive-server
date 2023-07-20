@@ -22,13 +22,16 @@ from django.conf.urls.static import static
 
 from .api import router
 from hsr_admin import urls
+from django.views.generic import TemplateView
 
 urlpatterns = (
     [
-        path("admin/", admin.site.urls),
+        path("admin_main/", admin.site.urls),
         path("api/", include(router.urls)),
-        path("", include(urls), name="hsr_admin"),
+        path("app/", TemplateView.as_view(template_name="app_index.html"), name="app"),
+        path("app", TemplateView.as_view(template_name="app_index.html"), name="app"),
+        path("admin/", include(urls), name="hsr_admin"),
     ]
-    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    + static("/", document_root=settings.STATIC_ROOT)
 )
