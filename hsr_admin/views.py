@@ -264,6 +264,21 @@ def view_category(request: HttpRequest, pk):
         category = RoomCategory.objects.get(pk=pk)
 
         if request.method == "POST":
+            if request.POST["put"]:
+                count = request.POST["count"]
+
+                try:
+                    count = int(count)
+                    for i in range(count):
+                        room = Room(category=category, number=Room.objects.count() + 1)
+
+                        room.save()
+
+                except Exception as e:
+                    print(e)
+
+                return redirect("hsr_admin:view_category", pk=category.pk)
+
             form = CategoryUpdateForm(request.POST)
             if not form.is_valid():
                 return render(

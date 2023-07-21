@@ -28,8 +28,8 @@ urlpatterns = (
     [
         path("admin_main/", admin.site.urls),
         path("api/", include(router.urls)),
-        path("app/", TemplateView.as_view(template_name="app_index.html"), name="app"),
-        path("app", TemplateView.as_view(template_name="app_index.html"), name="app"),
+        path("app/", TemplateView.as_view(template_name="hsr_admin/app_index.html"), name="app"),
+        path("app", TemplateView.as_view(template_name="hsr_admin/app_index.html"), name="app"),
         path("admin/", include(urls), name="hsr_admin"),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
