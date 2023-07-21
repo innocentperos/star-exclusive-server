@@ -83,7 +83,7 @@ def user_logout(request: HttpRequest):
 
 def home(request: HttpRequest):
     if not request.user.is_authenticated:
-        return redirect(index)
+        return redirect("hsr_admin:index")
     return render(
         request, template_name="hsr_admin/dashboard.html", context=context_parse({})
     )
